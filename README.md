@@ -97,6 +97,44 @@ SleepingDogsDefinitiveEdition\
 在 [GitHub Issues](https://github.com/aUsernameWoW/sleeping-dogs-encore/issues) 里说明情况，并附上
 `plugins\SDEncore.log`。
 
+### 致谢
+
+这个 mod 用到或参考了下面这些人和项目的成果，在此致谢。
+
+**研究资料**
+
+- Sleeping Dogs Wiki 的 [Cut Content](https://sleepingdogs.fandom.com/wiki/Cut_Content) 页面：早已记录了 2011 年 11 月原型里的「SWAT 联系人」，以及它留在游戏文件里的头像。
+- [SDmodding](https://github.com/SDmodding)，几乎全部出自 [sneakyevil](https://github.com/sneakyevil) 一人之手。这个 mod 用到了：
+  - SDmodding 分享的游戏 v1.0 版 exe 和调试符号（PDB，Steam 首发版自带）：游戏的脚本系统、手机联系人和商店的结构都是从这里查到的；
+  - [SDK](https://github.com/SDmodding/SDK)：游戏里的类名和数据结构；
+  - [Files](https://github.com/SDmodding/Files) 里导出的属性集、本地化文本、动作树和符号表（QSymbolsDictionary）；
+  - [BigFileSystem](https://github.com/SDmodding/BigFileSystem)、[TheoryEngine](https://github.com/SDmodding/TheoryEngine)，以及 sneakyevil 的 [SD-BigFileExplorer](https://github.com/sneakyevil/SD-BigFileExplorer) 和 [Ekey](https://github.com/Ekey) 的 SDDEUnpacker 里的文件名列表：
+    我们照着它们写了读取游戏资源包（`.big`）的工具，游戏脚本和任务数据都是用它从资源包里取出的。
+- Keylol 上的 [PS4 官方中文移植 + 粤语修正补丁](https://keylol.com/t987308-1-1)（SneakyEvil、MuYou 等）：中文台词里的人名和叫法沿用
+  其中 PS4 版官方中文的译法，中文字幕用它的字体。
+
+**游戏原有的内容**
+
+- 恢复的内容照游戏里被砍掉的原版脚本移植，部分台词改写自原版的占位台词；它们由 United Front Games 编写，
+  版权归 Square Enix 所有。
+- SkookumScript（Agog Labs）：游戏的脚本语言，mod 用游戏自带的编译器运行这些脚本。
+
+**mod 里包含的代码**（许可证全文见 [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md)）
+
+- [Ultimate ASI Loader](https://github.com/ThirteenAG/Ultimate-ASI-Loader)（ThirteenAG）：压缩包里的 `dinput8.dll`，让游戏加载 mod。它本身还包含 MinHook、
+  [miniz](https://github.com/richgel999/miniz)（Rich Geldreich 等）和 [praydog](https://github.com/praydog) 的 FunctionHookMinHook。
+- [MinHook](https://github.com/TsudaKageyu/minhook)（Tsuda Kageyu，内含 Vyacheslav Patkov 的 Hacker Disassembler Engine）：mod 靠它接入游戏。
+
+**工具**
+
+- [IDA Pro](https://hex-rays.com/ida-pro)（Hex-Rays）和 [ida-pro-mcp](https://github.com/mrexodia/ida-pro-mcp)（mrexodia）：分析游戏程序。
+- [Claude Code](https://claude.com/claude-code)（Anthropic）：这个 mod 是在 AI 辅助下开发的，代码、文档和逆向分析由作者和 Claude 一起完成。
+
+**游戏与商标**
+
+《热血无赖：终极版》（Sleeping Dogs: Definitive Edition）由 United Front Games 开发、Square Enix 发行，
+游戏及其内容的版权归 Square Enix 所有。
+
 与 Square Enix、United Front Games 均无关联。
 
 ## English
@@ -197,5 +235,47 @@ Delete `SDEncore.asi`, `SDEncore.ini` and `SDEncore.log` from `plugins`. If ther
 
 Describe it in [GitHub Issues](https://github.com/aUsernameWoW/sleeping-dogs-encore/issues) and attach
 `plugins\SDEncore.log`.
+
+### Credits
+
+This mod uses or builds on the work of these people and projects. Thank you.
+
+**Research**
+
+- The Sleeping Dogs Wiki's [Cut Content](https://sleepingdogs.fandom.com/wiki/Cut_Content) page: it documented the "SWAT contact" of the November 2011 prototype, and
+  its portrait left in the game files, long before this mod.
+- [SDmodding](https://github.com/SDmodding), almost all of it the work of one person, [sneakyevil](https://github.com/sneakyevil). This mod used:
+  - the game's v1.0 exe and its debug symbols (PDB, shipped with the original Steam release), shared by
+    SDmodding: the game's script system, phone contacts and shops were worked out from them;
+  - the [SDK](https://github.com/SDmodding/SDK): the game's class names and data structures;
+  - the property sets, localization text, action trees and symbol names (QSymbolsDictionary) exported in [Files](https://github.com/SDmodding/Files);
+  - [BigFileSystem](https://github.com/SDmodding/BigFileSystem), [TheoryEngine](https://github.com/SDmodding/TheoryEngine), and the file name lists in sneakyevil's [SD-BigFileExplorer](https://github.com/sneakyevil/SD-BigFileExplorer) and in [Ekey](https://github.com/Ekey)'s
+    SDDEUnpacker: our tool for reading the game's `.big` archives follows them; the game's scripts and mission data were taken out of the archives with it.
+- The [PS4 official Chinese port + Cantonese fix](https://keylol.com/t987308-1-1) on Keylol (SneakyEvil, MuYou and others): the
+  Chinese lines use the names of its official PS4 Chinese text, and Chinese subtitles use its fonts.
+
+**The game's own content**
+
+- What the mod restores is ported from the game's own cut scripts, and some lines are reworked from their
+  placeholder dialogue; they were written by United Front Games and are © Square Enix.
+- SkookumScript (Agog Labs): the game's scripting language; the mod runs its scripts through the game's own
+  compiler.
+
+**Code in the mod** (full license texts in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md))
+
+- [Ultimate ASI Loader](https://github.com/ThirteenAG/Ultimate-ASI-Loader) (ThirteenAG): the `dinput8.dll` in the zip, which makes the game load mods.
+  It contains MinHook, [miniz](https://github.com/richgel999/miniz) (Rich Geldreich and others) and [praydog](https://github.com/praydog)'s FunctionHookMinHook.
+- [MinHook](https://github.com/TsudaKageyu/minhook) (Tsuda Kageyu, with Vyacheslav Patkov's Hacker Disassembler Engine): how the mod hooks into the game.
+
+**Tools**
+
+- [IDA Pro](https://hex-rays.com/ida-pro) (Hex-Rays) and [ida-pro-mcp](https://github.com/mrexodia/ida-pro-mcp) (mrexodia): analyzing the game's code.
+- [Claude Code](https://claude.com/claude-code) (Anthropic): this mod was developed with AI assistance; its code, documentation and reverse
+  engineering were done by the author together with Claude.
+
+**The game and trademarks**
+
+Sleeping Dogs: Definitive Edition was developed by United Front Games and published by Square Enix; the game
+and its content are © Square Enix.
 
 Not affiliated with Square Enix or United Front Games.
