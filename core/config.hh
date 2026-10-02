@@ -54,7 +54,7 @@ struct Config
 	// Log the scripts' Debug.print/println (ours and the game's; empty in this build).
 	bool mScriptPrints = true;
 
-	// Development console (core/console.cc): ConsoleKey runs SDUncut-console.sk.
+	// Development console (core/console.cc): ConsoleKey runs SDEncore-console.sk.
 	bool mConsole = false;
 	int mConsoleKey = 0x7A; // VK_F11
 	// Development: puts a gun vendor where the player stands and logs the spot in the ini's format (0 = off).
@@ -65,6 +65,6 @@ extern Config gConfig;
 
 namespace config
 {
-	// Reads SDUncut.ini from `dir`, writing a commented default first if there is none.
+	// Reads SDEncore.ini from `dir`, writing a commented default first if there is none.
 	void Load(const std::wstring& dir);
 }

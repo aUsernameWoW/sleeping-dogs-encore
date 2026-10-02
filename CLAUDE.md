@@ -1,11 +1,12 @@
-# SDUncut — cut content put back into Sleeping Dogs: Definitive Edition
+# SDEncore — cut content put back into Sleeping Dogs: Definitive Edition
 
 The user's request (2026-10-02): after the research below on the rumoured hidden gun vendor, "a mod that adds the
 cut features back". Scope chosen by the user: the five cut phone contacts and a gun vendor NPC, **faithful to the
 originals with the rough edges fixed** (real lines instead of `[ Placeholder ]` subtitles, Chinese included,
 obvious bugs fixed). Not in scope yet: rebuilding the favour "Piece of Work" (its world objects weren't found),
-other cut missions. Public repo https://github.com/aUsernameWoW/sleeping-dogs-uncut (created 2026-10-02 at the
-user's request, CI from SDWet's; no Nexus page yet, so the `nexus` jobs skip).
+other cut missions. Public repo https://github.com/aUsernameWoW/sleeping-dogs-encore (created 2026-10-02 at the
+user's request, CI from SDWet's; no Nexus page yet, so the `nexus` jobs skip). Named SDUncut at first (repo
+`sleeping-dogs-uncut`, prerelease build-1); renamed the same day to the user's SDEncore.
 
 Built from SDTaxi's core (`skookum.cc`, `phone.cc`, `console.cc`, `crash.cc`, `scan.cc`, `mem.hh`): see
 `mods\SDTaxi\CLAUDE.md` for how running SkookumScript from the .asi and adding phone contacts work.
@@ -62,7 +63,7 @@ Built from SDTaxi's core (`skookum.cc`, `phone.cc`, `console.cc`, `crash.cc`, `s
 
 - `core/contacts.cc`: the five contacts in the phone (`phone.cc`, generalized from SDTaxi's to several contacts),
   each a script built from templates (`kCall` + `kCourier`/`kBoat` + a service), placeholders filled per
-  service; `SDUncut-<Key>.sk` next to the .asi replaces a built script (development; gets the leaf placeholders).
+  service; `SDEncore-<Key>.sk` next to the .asi replaces a built script (development; gets the leaf placeholders).
   A contact is hidden while its service runs. Changes from the originals, all deliberate:
   - real lines (Wei / the contact, the contact under the game's name for him via `UI.localize_string`);
   - the spot search falls back to 40-120 m out of sight; failures say why;
@@ -79,16 +80,16 @@ Built from SDTaxi's core (`skookum.cc`, `phone.cc`, `console.cc`, `crash.cc`, `s
   and over; money gone = sold → `player.equip_firearm(type)`; he goes when the player is 90 m away (or he's down).
   `items::SetGun` writes price/name/description into the item profile (language-dependent text, redone when the
   language is known). `[Debug] VendorHereKey` puts a test vendor (PISTOL_45CAL) 2 m in front of the player and logs
-  the spot in the ini's format (tags `[SDUncut:spot]`/`[SDUncut:facing]`).
+  the spot in the ini's format (tags `[SDEncore:spot]`/`[SDEncore:facing]`).
 - `core/text.cc`: `Language = auto` asks the game (`UI.localize_string` of three contact names, tag
-  `[SDUncut:lang]`): English text → English, CJK → Traditional or Simplified by counting characters that differ.
+  `[SDEncore:lang]`): English text → English, CJK → Traditional or Simplified by counting characters that differ.
 - `core/skookum.cc` (from SDTaxi) changes: the Debug print patch always happens (tags carry values back); when the
   methods are already replaced (another mod, e.g. SDTaxi), ours is chained in front and hands on everything but our
   tags; `Loaded()`.
 
-## Test round 1 (deployed 2026-10-02; plugins\SDUncut.ini created with Console = 1, VendorHereKey = 0x79 = F10)
+## Test round 1 (deployed 2026-10-02; plugins\SDEncore.ini created with Console = 1, VendorHereKey = 0x79 = F10)
 
-To check, from `plugins\SDUncut.log`: the language check; each contact in the phone (names localized?), each call
+To check, from `plugins\SDEncore.log`: the language check; each contact in the phone (names localized?), each call
 (subtitles in Chinese? the spawn, `active master` in free roam vs a mission), the boat search, the SWAT officer's
 behaviour; F10: the test vendor, the purchase prompt (price/name), whether money goes and the gun works. Open
 questions: does the purchase prompt appear on a script-controlled spawned ped; does the game itself also hand
@@ -96,5 +97,5 @@ something over; Chinese in Skookum string literals.
 
 ## Testing
 
-`tools\build.ps1 -Mod SDUncut -Test -Deploy`. `load_test` loads the .asi outside the game (default ini, every
+`tools\build.ps1 -Mod SDEncore -Test -Deploy`. `load_test` loads the .asi outside the game (default ini, every
 function reported missing).

@@ -64,7 +64,7 @@ jobs:
       COOLDOWN_DAYS: 7
     steps:
       # Credentials stay: the job pushes the update branch.
-      - name: Check out SDUncut
+      - name: Check out SDEncore
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Open a PR for a newer version

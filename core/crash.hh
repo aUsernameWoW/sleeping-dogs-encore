@@ -2,7 +2,7 @@
 
 // Crash diagnostics, so one test round is enough: a vectored exception handler that logs the first few
 // access violations (what was accessed, where, the stack as module+offset) and writes the first two as
-// SDUncut-crash-<n>.dmp next to the .asi (tools\dump.ps1 reads them). It only observes: exceptions go on
+// SDEncore-crash-<n>.dmp next to the .asi (tools\dump.ps1 reads them). It only observes: exceptions go on
 // to whoever handles them (the game's handlers, SEH guards). Only installed with logging on.
 
 #include <string>

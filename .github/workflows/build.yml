@@ -1,6 +1,6 @@
-# Builds SDUncut.asi and runs the automated tests, the way tools\build.ps1 -Test does in the modding workspace.
+# Builds SDEncore.asi and runs the automated tests, the way tools\build.ps1 -Test does in the modding workspace.
 # The .vcxproj reads MinHook's sources from ..\..\reference, so the job recreates that layout: this repo in
-# mods\SDUncut, MinHook in reference\minhook, at the commit in .github/reference.env. Every push to main that
+# mods\SDEncore, MinHook in reference\minhook, at the commit in .github/reference.env. Every push to main that
 # passes is then published as a prerelease.
 name: Build
 
@@ -30,12 +30,12 @@ jobs:
     defaults:
       run:
         shell: pwsh
-        working-directory: mods/SDUncut
+        working-directory: mods/SDEncore
     steps:
-      - name: Check out SDUncut
+      - name: Check out SDEncore
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          path: mods/SDUncut
+          path: mods/SDEncore
           persist-credentials: false
 
       # MINHOOK_REF etc. for the steps below. The pins live outside this file so that reference.yml can move
@@ -68,7 +68,7 @@ jobs:
       - name: Build
         run: |
           $vs = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -requires Microsoft.Component.MSBuild -property installationPath
-          & "$vs\MSBuild\Current\Bin\amd64\MSBuild.exe" SDUncut.sln -p:Configuration=Release -p:Platform=x64 -v:m -nologo -warnAsError
+          & "$vs\MSBuild\Current\Bin\amd64\MSBuild.exe" SDEncore.sln -p:Configuration=Release -p:Platform=x64 -v:m -nologo -warnAsError
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
 
       # tests\*.cc are all compiled; *_test.cc run with the .asi path as argv[1] (exit 0 = pass).
@@ -76,7 +76,7 @@ jobs:
         run: |
           $vs = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -requires Microsoft.Component.MSBuild -property installationPath
           & "$vs\Common7\Tools\Launch-VsDevShell.ps1" -Arch amd64 -HostArch amd64 -SkipAutomaticLocation
-          $asi = (Resolve-Path build\Release\SDUncut.asi).Path
+          $asi = (Resolve-Path build\Release\SDEncore.asi).Path
           $out = (New-Item -ItemType Directory -Force build\tests).FullName
           # Each test is its own program, so they compile side by side (the runspaces share the dev shell's
           # environment); each compiler output is printed afterwards as one block.
@@ -94,22 +94,22 @@ jobs:
               # Run next to a private copy so the test writes its .ini/.log there, not in build\Release.
               $sandbox = (New-Item -ItemType Directory -Force (Join-Path $out $src.BaseName)).FullName
               Copy-Item $asi $sandbox -Force
-              & (Join-Path $out "$($src.BaseName).exe") (Join-Path $sandbox SDUncut.asi)
+              & (Join-Path $out "$($src.BaseName).exe") (Join-Path $sandbox SDEncore.asi)
               if ($LASTEXITCODE) { $failed += $src.BaseName }
           }
           if ($failed) { throw "Failed: $($failed -join ', ')" }
 
-      - name: Upload SDUncut.asi
+      - name: Upload SDEncore.asi
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: SDUncut
+          name: SDEncore
           path: |
-            mods/SDUncut/build/Release/SDUncut.asi
-            mods/SDUncut/build/Release/SDUncut.pdb
+            mods/SDEncore/build/Release/SDEncore.asi
+            mods/SDEncore/build/Release/SDEncore.pdb
           if-no-files-found: error
 
-  # SDUncut.zip, the download for players: unpacked into the game folder it gives dinput8.dll (Ultimate ASI
-  # Loader, pinned in .github/asi-loader.env) and plugins\SDUncut.asi. The Nexus uploads are this same zip.
+  # SDEncore.zip, the download for players: unpacked into the game folder it gives dinput8.dll (Ultimate ASI
+  # Loader, pinned in .github/asi-loader.env) and plugins\SDEncore.asi. The Nexus uploads are this same zip.
   # Also runs for PRs, so a loader update is downloaded and checked before it is merged.
   package:
     name: Package
@@ -117,15 +117,15 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Check out SDUncut
+      - name: Check out SDEncore
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
-      - name: Download SDUncut.asi
+      - name: Download SDEncore.asi
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
-          name: SDUncut
+          name: SDEncore
           path: dist
 
       # The loader is downloaded once per pin, so builds don't depend on the upstream release asset staying
@@ -136,28 +136,28 @@ jobs:
           path: loader.zip
           key: asi-loader-${{ hashFiles('.github/asi-loader.env') }}
 
-      - name: Package SDUncut.zip
+      - name: Package SDEncore.zip
         run: |
           . .github/asi-loader.env
           [ -f loader.zip ] || curl -sSfL --retry 3 -o loader.zip "$ASI_LOADER_URL"
           echo "$ASI_LOADER_SHA256  loader.zip" | sha256sum -c -
           mkdir -p package/plugins
           unzip -j loader.zip '*dinput8.dll' -d package
-          cp dist/SDUncut.asi package/plugins/
-          cp THIRD-PARTY-NOTICES.md package/plugins/SDUncut-THIRD-PARTY-NOTICES.md
-          (cd package && zip -r -X ../SDUncut.zip dinput8.dll plugins)
-          unzip -l SDUncut.zip
+          cp dist/SDEncore.asi package/plugins/
+          cp THIRD-PARTY-NOTICES.md package/plugins/SDEncore-THIRD-PARTY-NOTICES.md
+          (cd package && zip -r -X ../SDEncore.zip dinput8.dll plugins)
+          unzip -l SDEncore.zip
 
-      - name: Upload SDUncut.zip
+      - name: Upload SDEncore.zip
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: SDUncut-zip
-          path: SDUncut.zip
+          name: SDEncore-zip
+          path: SDEncore.zip
           if-no-files-found: error
 
   # Tag build-<N>, N = the commit's position on main (stable across re-runs). The assets keep their plain
-  # names so SDUncut.asi can go into plugins\ as downloaded, and the README can link
-  # releases/latest/download/SDUncut.zip (the newest full release).
+  # names so SDEncore.asi can go into plugins\ as downloaded, and the README can link
+  # releases/latest/download/SDEncore.zip (the newest full release).
   prerelease:
     name: Prerelease
     needs: package
@@ -174,10 +174,10 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Download SDUncut.asi and SDUncut.zip
+      - name: Download SDEncore.asi and SDEncore.zip
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
-          pattern: SDUncut*
+          pattern: SDEncore*
           merge-multiple: true
           path: dist
 
@@ -196,16 +196,16 @@ jobs:
               echo "::error::$tag already exists for another commit"
               exit 1
             fi
-            gh release upload "$tag" dist/SDUncut.zip dist/SDUncut.asi dist/SDUncut.pdb THIRD-PARTY-NOTICES.md --clobber
+            gh release upload "$tag" dist/SDEncore.zip dist/SDEncore.asi dist/SDEncore.pdb THIRD-PARTY-NOTICES.md --clobber
             exit 0
           fi
           prev=$(git describe --tags --abbrev=0 --match 'build-*' HEAD 2> /dev/null || true)
           {
             echo "Automatic build of $short on \`main\` ([CI run]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID)). Untested in game."
             echo
-            echo "- \`SDUncut.zip\`: unpack into the game folder. Contains the mod and Ultimate ASI Loader (\`dinput8.dll\`); see the [README](https://github.com/$GITHUB_REPOSITORY#readme)."
-            echo "- \`SDUncut.asi\`: the mod alone, for the \`plugins\` folder of a game that already has an ASI loader."
-            echo "- \`SDUncut.pdb\`: only needed to read crash dumps."
+            echo "- \`SDEncore.zip\`: unpack into the game folder. Contains the mod and Ultimate ASI Loader (\`dinput8.dll\`); see the [README](https://github.com/$GITHUB_REPOSITORY#readme)."
+            echo "- \`SDEncore.asi\`: the mod alone, for the \`plugins\` folder of a game that already has an ASI loader."
+            echo "- \`SDEncore.pdb\`: only needed to read crash dumps."
             echo
             if [ -n "$prev" ]; then
               echo "Changes since $prev:"
@@ -215,8 +215,8 @@ jobs:
               git log -n 10 --format='- %s (%h)'
             fi
           } > notes.md
-          gh release create "$tag" dist/SDUncut.zip dist/SDUncut.asi dist/SDUncut.pdb THIRD-PARTY-NOTICES.md --prerelease --target "$GITHUB_SHA" \
-            --title "SDUncut build $n ($short)" --notes-file notes.md
+          gh release create "$tag" dist/SDEncore.zip dist/SDEncore.asi dist/SDEncore.pdb THIRD-PARTY-NOTICES.md --prerelease --target "$GITHUB_SHA" \
+            --title "SDEncore build $n ($short)" --notes-file notes.md
 
   # Each new prerelease also becomes the latest version of the mod's "GitHub CI Build" file on Nexus Mods,
   # through the v3 upload API. Full releases go to a separate main file (nexus-release.yml). Configured per
@@ -245,7 +245,7 @@ jobs:
           persist-credentials: false
 
       # Nexus keeps every upload as a new version, so a re-run of a build it already has uploads nothing.
-      # The file is the prerelease's SDUncut.zip; the .pdb stays on GitHub. Paths in the description use /:
+      # The file is the prerelease's SDEncore.zip; the .pdb stays on GitHub. Paths in the description use /:
       # the Files tab shows file descriptions with their backslashes removed.
       - name: Package
         id: package
@@ -269,7 +269,7 @@ jobs:
           fi
           latest=$(jq -r '.data.versions | max_by(.uploaded_at) | .version // empty' versions.json)
 
-          gh release download "$version" -p SDUncut.zip -O "SDUncut-$version.zip"
+          gh release download "$version" -p SDEncore.zip -O "SDEncore-$version.zip"
 
           # Changes since the version Nexus has, or since the previous build if that is not a build tag.
           if git rev-parse -q --verify "refs/tags/$latest" > /dev/null; then
@@ -279,8 +279,8 @@ jobs:
           fi
           {
             echo "version=$version"
-            echo "name=SDUncut GitHub CI Build $n"
-            echo "description=Automatic build of $short on main, untested in game. Unpack into the game folder: dinput8.dll (Ultimate ASI Loader) and plugins/SDUncut.asi. Source and .pdb: https://github.com/$GITHUB_REPOSITORY/releases/tag/$version"
+            echo "name=SDEncore GitHub CI Build $n"
+            echo "description=Automatic build of $short on main, untested in game. Unpack into the game folder: dinput8.dll (Ultimate ASI Loader) and plugins/SDEncore.asi. Source and .pdb: https://github.com/$GITHUB_REPOSITORY/releases/tag/$version"
             delimiter="EOF_$(openssl rand -hex 8)"
             echo "changelog<<$delimiter"
             if [ -n "$since" ]; then git log --format='%s' "$since..HEAD"; else git log -n 10 --format='%s'; fi
@@ -296,7 +296,7 @@ jobs:
           api_key: ${{ secrets.NEXUSMODS_API_KEY }}
           mod_id: ${{ vars.NEXUS_MOD_ID }}
           file_id: ${{ vars.NEXUS_CI_FILE_ID }}
-          filename: SDUncut-${{ steps.package.outputs.version }}.zip
+          filename: SDEncore-${{ steps.package.outputs.version }}.zip
           version: ${{ steps.package.outputs.version }}
           display_name: ${{ steps.package.outputs.name }}
           description: ${{ steps.package.outputs.description }}

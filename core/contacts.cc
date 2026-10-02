@@ -26,7 +26,7 @@ namespace contacts
 
 	struct Service
 	{
-		const char* mKey;        // phone contact key, log tag, override file SDUncut-<key>.sk
+		const char* mKey;        // phone contact key, log tag, override file SDEncore-<key>.sk
 		const char* mNameKey;    // the cut contact's name in the game's text
 		const char* mPortrait;
 		text::Line mInfo;
@@ -46,19 +46,19 @@ namespace contacts
 	static constexpr char kCall[] = R"sk(
 !player !spawn_xform !found
 player: World.c_player
-Debug.println("[SDUncut] {TAG}: called at ", player.get_pos(), "; active master: ", GameSlice.get_active_master())
+Debug.println("[SDEncore] {TAG}: called at ", player.get_pos(), "; active master: ", GameSlice.get_active_master())
 spawn_xform: Transform!()
 found: false
 {SEARCH}
 if found.not() [
-	Debug.println("[SDUncut] {TAG}: no spawn spot near the player")
+	Debug.println("[SDEncore] {TAG}: no spawn spot near the player")
 	NIS.c_default._flash_subtitles({FAIL})
 	if {HANGUP} [
 		PDA.end_phone_call()
 	]
 ]
 else [
-	Debug.println("[SDUncut] {TAG}: spawning at ", spawn_xform.get_pos(), ", ", player.get_pos().distance(spawn_xform.get_pos()), " m from the player")
+	Debug.println("[SDEncore] {TAG}: spawning at ", spawn_xform.get_pos(), ", ", player.get_pos().distance(spawn_xform.get_pos()), " m from the player")
 	NIS.c_default._flash_subtitles({ASK})
 	NIS.c_default._flash_subtitles({ANSWER})
 	if {HANGUP} [
@@ -88,10 +88,10 @@ if found.not() [
 	// gameslices' cleanup did (despawn(true)).
 	static constexpr char kCourier[] = R"sk(
 	!car !contact !met
-	car: c_world.spawn_object_at_xform(spawn_xform, '{VEHICLE}', "SDUncut_{KEY}_Car")<>Vehicle
-	contact: Character.create_at_pos((spawn_xform.get_pos() + (spawn_xform.get_dir_left() *= 2.0)), nil, '{CHARACTER}', "SDUncut_{KEY}", {BEHAVIOUR}, false)
+	car: c_world.spawn_object_at_xform(spawn_xform, '{VEHICLE}', "SDEncore_{KEY}_Car")<>Vehicle
+	contact: Character.create_at_pos((spawn_xform.get_pos() + (spawn_xform.get_dir_left() *= 2.0)), nil, '{CHARACTER}', "SDEncore_{KEY}", {BEHAVIOUR}, false)
 	if car.is_nil() or contact.is_nil() [
-		Debug.println("[SDUncut] {TAG}: spawning failed: car ", car, ", contact ", contact)
+		Debug.println("[SDEncore] {TAG}: spawning failed: car ", car, ", contact ", contact)
 		car%despawn()
 		contact%despawn()
 	]
@@ -105,7 +105,7 @@ if found.not() [
 		contact.enable_script_control(false)
 		car.set_driving_role("Ally")
 		contact.set_objective_and_actor("{OBJECTIVE}", player)
-		Debug.println("[SDUncut] {TAG}: ", contact, " in ", car, " is on the way")
+		Debug.println("[SDEncore] {TAG}: ", contact, " in ", car, " is on the way")
 		met: false
 		{SERVICE}
 		contact%minimap_remove_blip()
@@ -119,7 +119,7 @@ if found.not() [
 			contact.despawn(true)
 		]
 		{AFTER}
-		Debug.println("[SDUncut] {TAG}: done (met the player: ", met, ")")
+		Debug.println("[SDEncore] {TAG}: done (met the player: ", met, ")")
 	]
 )sk";
 
@@ -129,11 +129,11 @@ if found.not() [
 			[
 				player._wait_near_actor(contact, 2.0)
 				met := true
-				Debug.println("[SDUncut] {TAG}: met the player at ", player.get_pos())
+				Debug.println("[SDEncore] {TAG}: met the player at ", player.get_pos())
 			]
 			[
 				_wait(240.0)
-				Debug.println("[SDUncut] {TAG}: not at the player after 4 minutes")
+				Debug.println("[SDEncore] {TAG}: not at the player after 4 minutes")
 			]
 			[
 				loop [
@@ -145,7 +145,7 @@ if found.not() [
 					]
 					_wait(1.0)
 				]
-				Debug.println("[SDUncut] {TAG}: the contact is down or gone")
+				Debug.println("[SDEncore] {TAG}: the contact is down or gone")
 			]
 		]
 )sk";
@@ -173,7 +173,7 @@ if found.not() [
 			player.equip_firearm('{WEAPON}')
 			NIS.hide_letterbox()
 			player.enable_player_script_control(false)
-			Debug.println("[SDUncut] {TAG}: handed over {WEAPON}; the player holds ", player.get_firearm())
+			Debug.println("[SDEncore] {TAG}: handed over {WEAPON}; the player holds ", player.get_firearm())
 		]
 )sk";
 
@@ -187,7 +187,7 @@ if found.not() [
 		race [
 			[
 				_wait_until_fight_over({contact})
-				Debug.println("[SDUncut] {TAG}: the backup is down")
+				Debug.println("[SDEncore] {TAG}: the backup is down")
 			]
 			[
 				loop [
@@ -198,7 +198,7 @@ if found.not() [
 					if player.distance_actor(contact) > {LEASH} [
 						far := far + 1
 						if far >= 30 [
-							Debug.println("[SDUncut] {TAG}: the player left the backup behind")
+							Debug.println("[SDEncore] {TAG}: the player left the backup behind")
 							exit
 						]
 					]
@@ -231,7 +231,7 @@ if found.not() [
 			if car.is_valid_simobject() [
 				car.set_parked(false)
 				car.minimap_add_blip("friendly", false)
-				Debug.println("[SDUncut] {TAG}: the truck is the player's, at ", car.get_pos())
+				Debug.println("[SDEncore] {TAG}: the truck is the player's, at ", car.get_pos())
 			]
 		]
 )sk";
@@ -245,7 +245,7 @@ if found.not() [
 							exit
 						]
 						if player.is_the_driver(car) [
-							Debug.println("[SDUncut] {TAG}: the player drives the truck")
+							Debug.println("[SDEncore] {TAG}: the player drives the truck")
 							exit
 						]
 						_wait(0.5)
@@ -261,14 +261,14 @@ if found.not() [
 	// unlocked and marked until the player takes it.
 	static constexpr char kBoat[] = R"sk(
 	!boat !boarded
-	boat: c_world.spawn_object_at_xform(spawn_xform, '{VEHICLE}', "SDUncut_{KEY}_Boat")<>Vehicle
+	boat: c_world.spawn_object_at_xform(spawn_xform, '{VEHICLE}', "SDEncore_{KEY}_Boat")<>Vehicle
 	if boat.is_nil() [
-		Debug.println("[SDUncut] {TAG}: the boat didn't spawn")
+		Debug.println("[SDEncore] {TAG}: the boat didn't spawn")
 	]
 	else [
 		boat.set_parked(false)
 		boat.minimap_add_blip("friendly", false)
-		Debug.println("[SDUncut] {TAG}: ", boat, " at ", boat.get_pos(), ", in water: ", boat.is_boat_in_water())
+		Debug.println("[SDEncore] {TAG}: ", boat, " at ", boat.get_pos(), ", in water: ", boat.is_boat_in_water())
 		NIS.c_default._flash_subtitles({HANDOVER})
 		boarded: false
 		race [
@@ -288,10 +288,10 @@ if found.not() [
 		]
 		boat%minimap_remove_blip()
 		if boarded [
-			Debug.println("[SDUncut] {TAG}: the player took the boat")
+			Debug.println("[SDEncore] {TAG}: the player took the boat")
 		]
 		else [
-			Debug.println("[SDUncut] {TAG}: nobody took the boat in 5 minutes")
+			Debug.println("[SDEncore] {TAG}: nobody took the boat in 5 minutes")
 		]
 	]
 )sk";
@@ -384,17 +384,17 @@ if found.not() [
 			text::Replace(script, "{OBJECTIVE}", backup ? "eAI_OBJECTIVE_BE_ALLY" : "eAI_OBJECTIVE_FOLLOW_TARGET");
 			text::Replace(script, "{LEASH}", Number(gConfig.mBackupLeash));
 			text::Replace(script, "{TIMELIMIT}", gConfig.mBackupMinutes > 0
-				? "[\n_wait(" + Number(gConfig.mBackupMinutes * 60.0f) + ")\nDebug.println(\"[SDUncut] {TAG}: time is up\")\n]" : "");
+				? "[\n_wait(" + Number(gConfig.mBackupMinutes * 60.0f) + ")\nDebug.println(\"[SDEncore] {TAG}: time is up\")\n]" : "");
 		}
 		Fill(script, s, hangUp);
 		return script;
 	}
 
-	// SDUncut-<key>.sk next to the .asi, read at every call, replaces the built script (development); it gets the
+	// SDEncore-<key>.sk next to the .asi, read at every call, replaces the built script (development); it gets the
 	// same placeholders.
 	static bool ReadOverride(const Service& s, std::string& text)
 	{
-		const std::wstring path = gDir + L"\\SDUncut-" + std::wstring(s.mKey, s.mKey + strlen(s.mKey)) + L".sk";
+		const std::wstring path = gDir + L"\\SDEncore-" + std::wstring(s.mKey, s.mKey + strlen(s.mKey)) + L".sk";
 		FILE* file = nullptr;
 		if (_wfopen_s(&file, path.c_str(), L"rb") != 0 || !file) {
 			return false;
@@ -478,7 +478,7 @@ if found.not() [
 				continue;
 			}
 			phone::Contact contact;
-			contact.mKey = std::string("SDUncut_") + s.mKey;
+			contact.mKey = std::string("SDEncore_") + s.mKey;
 			contact.mName = s.mNameKey;
 			contact.mInfo = &Info;
 			contact.mPortrait = s.mPortrait;

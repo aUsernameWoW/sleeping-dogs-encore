@@ -22,7 +22,7 @@ namespace crash
 		using MiniDumpWriteDumpFn = BOOL(WINAPI*)(HANDLE, DWORD, HANDLE, MINIDUMP_TYPE, PMINIDUMP_EXCEPTION_INFORMATION,
 			PMINIDUMP_USER_STREAM_INFORMATION, PMINIDUMP_CALLBACK_INFORMATION);
 
-		// "SDUncut.asi+0x1234", or the bare address outside any module.
+		// "SDEncore.asi+0x1234", or the bare address outside any module.
 		void Describe(DWORD64 address, char* out, size_t size)
 		{
 			HMODULE module = nullptr;
@@ -78,7 +78,7 @@ namespace crash
 				return;
 			}
 			wchar_t path[MAX_PATH];
-			swprintf_s(path, L"%s\\SDUncut-crash-%d.dmp", gDir, n + 1);
+			swprintf_s(path, L"%s\\SDEncore-crash-%d.dmp", gDir, n + 1);
 			HANDLE file = CreateFileW(path, GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 			if (file == INVALID_HANDLE_VALUE) {
 				return;
@@ -87,7 +87,7 @@ namespace crash
 			const auto type = static_cast<MINIDUMP_TYPE>(MiniDumpWithIndirectlyReferencedMemory | MiniDumpWithThreadInfo | MiniDumpWithUnloadedModules);
 			const BOOL ok = write(GetCurrentProcess(), GetCurrentProcessId(), file, type, &exception, nullptr, nullptr);
 			CloseHandle(file);
-			LOG("crash: dump %s: SDUncut-crash-%d.dmp", ok ? "written" : "FAILED", n + 1);
+			LOG("crash: dump %s: SDEncore-crash-%d.dmp", ok ? "written" : "FAILED", n + 1);
 		}
 
 		LONG CALLBACK Handler(EXCEPTION_POINTERS* info)

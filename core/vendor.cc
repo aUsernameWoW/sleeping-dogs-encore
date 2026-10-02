@@ -24,10 +24,10 @@ namespace vendor
 					!money
 					money: player.money_get()
 					vendor._wait_for_scripted_social_dialogue('eFACEACTION_PURCHASE', 0, false, 'eINVENTORY_ITEM_{ITEM}')
-					Debug.println("[SDUncut] {TAG}: conversation over, money ", money, " -> ", player.money_get(), ", success: ", vendor.face_is_action_success())
+					Debug.println("[SDEncore] {TAG}: conversation over, money ", money, " -> ", player.money_get(), ", success: ", vendor.face_is_action_success())
 					if player.money_get() < money [
 						player.equip_firearm('{FIREARM}')
-						Debug.println("[SDUncut] {TAG}: sold {ITEM}; the player holds ", player.get_firearm())
+						Debug.println("[SDEncore] {TAG}: sold {ITEM}; the player holds ", player.get_firearm())
 					]
 					_wait(1.0)
 				]
@@ -41,7 +41,7 @@ namespace vendor
 						exit
 					]
 					if vendor.is_knocked_out() [
-						Debug.println("[SDUncut] {TAG}: the vendor is down")
+						Debug.println("[SDEncore] {TAG}: the vendor is down")
 						exit
 					]
 					if player.distance(pos) > {FAR} [
@@ -57,19 +57,19 @@ namespace vendor
 pos: Vector3!xyz({X}, {Y}, {Z})
 facing: Vector3!xyz({FX}, {FY}, {Z})
 player: World.c_player
-Debug.println("[SDUncut] {TAG}: selling {ITEM} at ", pos)
+Debug.println("[SDEncore] {TAG}: selling {ITEM} at ", pos)
 loop [
 	_wait(1.0)
 	if player.is_valid_simobject() [
 		if player.distance(pos) < {NEAR} [
 			!vendor
-			vendor: Character.create_at_pos(pos, facing, '{CHARACTER}', "SDUncut_GunVendor", nil, true)
+			vendor: Character.create_at_pos(pos, facing, '{CHARACTER}', "SDEncore_GunVendor", nil, true)
 			if vendor.is_nil() [
-				Debug.println("[SDUncut] {TAG}: the vendor didn't spawn")
+				Debug.println("[SDEncore] {TAG}: the vendor didn't spawn")
 				_wait(10.0)
 			]
 			else [
-				Debug.println("[SDUncut] {TAG}: ", vendor, " at ", vendor.get_pos(), ", the player ", player.distance(pos), " m away")
+				Debug.println("[SDEncore] {TAG}: ", vendor, " at ", vendor.get_pos(), ", the player ", player.distance(pos), " m away")
 				vendor.set_suspend_option('PedSuspendOption_NoSuspend')
 				vendor.face_set_requires_greet(false)
 				race [
@@ -88,7 +88,7 @@ loop [
 					]
 					_wait(1.0)
 				]
-				Debug.println("[SDUncut] {TAG}: the player left, the vendor goes")
+				Debug.println("[SDEncore] {TAG}: the player left, the vendor goes")
 			]
 		]
 	]
@@ -103,14 +103,14 @@ player: World.c_player
 dir: player.get_dir()
 pos: player.get_pos() + (dir *= 2.0)
 facing: player.get_pos()
-Debug.println("[SDUncut:spot]", pos)
-Debug.println("[SDUncut:facing]", facing)
-vendor: Character.create_at_pos(pos, facing, '{CHARACTER}', "SDUncut_GunVendor", nil, true)
+Debug.println("[SDEncore:spot]", pos)
+Debug.println("[SDEncore:facing]", facing)
+vendor: Character.create_at_pos(pos, facing, '{CHARACTER}', "SDEncore_GunVendor", nil, true)
 if vendor.is_nil() [
-	Debug.println("[SDUncut] {TAG}: the vendor didn't spawn")
+	Debug.println("[SDEncore] {TAG}: the vendor didn't spawn")
 ]
 else [
-	Debug.println("[SDUncut] {TAG}: ", vendor, " at ", vendor.get_pos())
+	Debug.println("[SDEncore] {TAG}: ", vendor, " at ", vendor.get_pos())
 	vendor.set_suspend_option('PedSuspendOption_NoSuspend')
 	vendor.face_set_requires_greet(false)
 	race [
@@ -123,7 +123,7 @@ else [
 	]
 	vendor.set_suspend_option('PedSuspendOption_SuspendAllowed')
 	vendor.despawn(true)
-	Debug.println("[SDUncut] {TAG}: done")
+	Debug.println("[SDEncore] {TAG}: done")
 ]
 )sk";
 
@@ -305,8 +305,8 @@ else [
 			LOG("vendor: spot %zu at (%.1f, %.1f, %.1f) facing %.0f: %s for HK$%d", gSpots.size(), s.mX, s.mY, s.mZ, s.mHeading, gun->mItem,
 				Price(*gun));
 		}
-		skookum::OnPrintTag("[SDUncut:spot]", &OnSpot);
-		skookum::OnPrintTag("[SDUncut:facing]", &OnFacing);
+		skookum::OnPrintTag("[SDEncore:spot]", &OnSpot);
+		skookum::OnPrintTag("[SDEncore:facing]", &OnFacing);
 		skookum::OnTick(&Tick);
 		LOG("vendor: %zu spot(s)%s", gSpots.size(), gConfig.mVendorHereKey ? "; the test key puts one in front of the player" : "");
 	}

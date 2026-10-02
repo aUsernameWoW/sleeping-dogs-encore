@@ -1,4 +1,4 @@
-# Dependabot for the Ultimate ASI Loader that SDUncut.zip ships (Dependabot only knows package ecosystems,
+# Dependabot for the Ultimate ASI Loader that SDEncore.zip ships (Dependabot only knows package ecosystems,
 # not GitHub release downloads). Monthly, it looks up the loader's latest release and, once that is a week
 # old, opens a PR moving the pin in .github/asi-loader.env. The mod only relies on the loader loading
 # plugins\*.asi, so following its releases is low-risk; the PR still lets a person look before players get it.
@@ -40,7 +40,7 @@ jobs:
       COOLDOWN_DAYS: 7
     steps:
       # Credentials stay: the job pushes the update branch.
-      - name: Check out SDUncut
+      - name: Check out SDEncore
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Open a PR for a newer loader
@@ -87,7 +87,7 @@ jobs:
 
           old=$(sed -n 's|.*/releases/download/\([^/]*\)/.*|\1|p' <<< "$ASI_LOADER_URL")
           {
-            echo "Moves the Ultimate ASI Loader shipped as \`dinput8.dll\` in \`SDUncut.zip\` from $old to [$tag](https://github.com/$LOADER_REPO/releases/tag/$tag)."
+            echo "Moves the Ultimate ASI Loader shipped as \`dinput8.dll\` in \`SDEncore.zip\` from $old to [$tag](https://github.com/$LOADER_REPO/releases/tag/$tag)."
             echo
             echo "- Asset: \`$ASSET\`, SHA-256 \`$sha\`"
             echo "- Changes: https://github.com/$LOADER_REPO/compare/$old...$tag"

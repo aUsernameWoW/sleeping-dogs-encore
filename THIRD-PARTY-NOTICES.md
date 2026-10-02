@@ -1,6 +1,6 @@
 # Third-party notices
 
-`SDUncut.asi` contains code from the following projects, and `SDUncut.zip` also ships Ultimate ASI Loader as
+`SDEncore.asi` contains code from the following projects, and `SDEncore.zip` also ships Ultimate ASI Loader as
 `dinput8.dll`, under the licenses reproduced below.
 
 ## MinHook 1.3.4

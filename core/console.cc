@@ -17,7 +17,7 @@ namespace console
 	static DWORD gLastRun = 0;
 
 	static constexpr char kDefaultScript[] =
-		"// SDUncut console: the ConsoleKey in SDUncut.ini runs this file's blocks in order; results go to SDUncut.log.\n"
+		"// SDEncore console: the ConsoleKey in SDEncore.ini runs this file's blocks in order; results go to SDEncore.log.\n"
 		"// Blocks start at lines beginning with //--- (the rest of the line is the block's name).\n"
 		"//--- where the player is, and which mission (active master gameslice) runs\n"
 		"Debug.println(\"player at \", World.c_player.get_pos(), \", facing \", World.c_player.get_dir(), \", active master \", "
@@ -140,7 +140,7 @@ namespace console
 			LOG("console: no scripts, console off");
 			return;
 		}
-		gPath = dir + L"\\SDUncut-console.sk";
+		gPath = dir + L"\\SDEncore-console.sk";
 		if (GetFileAttributesW(gPath.c_str()) == INVALID_FILE_ATTRIBUTES) {
 			FILE* file = nullptr;
 			if (_wfopen_s(&file, gPath.c_str(), L"wb") == 0 && file) {
@@ -149,6 +149,6 @@ namespace console
 			}
 		}
 		skookum::OnTick(&Tick);
-		LOG("console: key 0x%02X runs SDUncut-console.sk", gConfig.mConsoleKey);
+		LOG("console: key 0x%02X runs SDEncore-console.sk", gConfig.mConsoleKey);
 	}
 }

@@ -41,11 +41,11 @@ BOOL WINAPI DllMain(HMODULE module, DWORD reason, LPVOID)
 		config::Load(dir);
 
 		if (gConfig.mLogging) {
-			logger::Open(dir + L"\\SDUncut.log");
+			logger::Open(dir + L"\\SDEncore.log");
 			crash::Install(dir);
 		}
 
-		LOG("SDUncut loaded (Language=%s WeaponContact=%d GunBackup=%d MeleeBackup=%d BoatContact=%d SwatContact=%d GunVendor=%d spots=%zu "
+		LOG("SDEncore loaded (Language=%s WeaponContact=%d GunBackup=%d MeleeBackup=%d BoatContact=%d SwatContact=%d GunVendor=%d spots=%zu "
 			"ScriptPrints=%d Console=%d VendorHereKey=0x%02X)",
 			gConfig.mLanguage.c_str(), gConfig.mWeaponContact.mEnabled, gConfig.mGunBackup.mEnabled, gConfig.mMeleeBackup.mEnabled,
 			gConfig.mBoatContact.mEnabled, gConfig.mSwatContact.mEnabled, gConfig.mVendor, gConfig.mVendorSpots.size(), gConfig.mScriptPrints,

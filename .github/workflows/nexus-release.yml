@@ -1,6 +1,6 @@
 # Publishes a full release to the mod's main file on Nexus Mods (build.yml sends every prerelease to the
 # "GitHub CI Build" file). A release is a build-<N> prerelease turned into a full release on GitHub: edit it
-# and untick "Set as a pre-release". Its SDUncut.zip is uploaded as built and tested by CI, nothing is
+# and untick "Set as a pre-release". Its SDEncore.zip is uploaded as built and tested by CI, nothing is
 # rebuilt. Settings (vars.NEXUS_*, secrets.NEXUSMODS_API_KEY) are described in build.yml.
 #
 # A release event runs this file as it is in the released commit, so promoting a build older than this
@@ -39,7 +39,7 @@ jobs:
       GH_TOKEN: ${{ github.token }}
       GH_REPO: ${{ github.repository }}
       # The name of the release file; also how it is found when vars.NEXUS_RELEASE_FILE_ID is not set yet.
-      FILE_NAME: SDUncut
+      FILE_NAME: SDEncore
     steps:
       # Full history and tags: the change list since the previous release.
       - name: Check out history
@@ -80,9 +80,9 @@ jobs:
           fi
 
           # The zip players download from GitHub, packaged by build.yml (the mod + the ASI loader).
-          zip="SDUncut-$TAG.zip"
-          if ! gh release download "$TAG" -p SDUncut.zip -O "$zip"; then
-            echo "::error::$TAG has no SDUncut.zip (built before build.yml packaged one); release a newer build"
+          zip="SDEncore-$TAG.zip"
+          if ! gh release download "$TAG" -p SDEncore.zip -O "$zip"; then
+            echo "::error::$TAG has no SDEncore.zip (built before build.yml packaged one); release a newer build"
             exit 1
           fi
 
@@ -98,7 +98,7 @@ jobs:
           {
             echo "file_id=$file_id"
             echo "zip=$zip"
-            echo "description=Release $TAG. Unpack into the game folder: dinput8.dll (Ultimate ASI Loader) and plugins/SDUncut.asi. Source and .pdb: https://github.com/$GITHUB_REPOSITORY/releases/tag/$TAG"
+            echo "description=Release $TAG. Unpack into the game folder: dinput8.dll (Ultimate ASI Loader) and plugins/SDEncore.asi. Source and .pdb: https://github.com/$GITHUB_REPOSITORY/releases/tag/$TAG"
             delimiter="EOF_$(openssl rand -hex 8)"
             echo "changelog<<$delimiter"
             [ -n "$prev" ] && git log --format='%s' "$prev..$TAG"

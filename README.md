@@ -1,4 +1,4 @@
-# Sleeping Dogs: Definitive Edition — cut content restored (SDUncut)
+# Sleeping Dogs: Definitive Edition — cut content restored (SDEncore)
 
 [中文](#中文) | [English](#english)
 
@@ -24,15 +24,15 @@
 
 **第 1 步：下载**
 
-点这里下载 **[SDUncut.zip](https://github.com/aUsernameWoW/sleeping-dogs-uncut/releases/latest/download/SDUncut.zip)**。
+点这里下载 **[SDEncore.zip](https://github.com/aUsernameWoW/sleeping-dogs-encore/releases/latest/download/SDEncore.zip)**。
 
 压缩包里只有这些：
 
 ```text
 dinput8.dll                  ← Ultimate ASI Loader：让游戏加载 mod 的“加载器”
 plugins\
-    SDUncut.asi              ← mod 本体
-    SDUncut-THIRD-PARTY-NOTICES.md
+    SDEncore.asi              ← mod 本体
+    SDEncore-THIRD-PARTY-NOTICES.md
 ```
 
 **第 2 步：打开游戏文件夹**
@@ -43,7 +43,7 @@ plugins\
 
 **第 3 步：把文件放进去**
 
-1. 双击打开下载的 `SDUncut.zip`。
+1. 双击打开下载的 `SDEncore.zip`。
 2. 选中里面的 `dinput8.dll` 和 `plugins` 文件夹，一起拖进游戏文件夹。
 3. 如果 Windows 弹出「替换或跳过文件」，说明游戏文件夹里已经有 `dinput8.dll` 了（你以前装过别的 mod，
    加载器已经在了），选「跳过该文件」。已有的 `plugins` 文件夹会自动合并，不用管。
@@ -55,14 +55,14 @@ SleepingDogsDefinitiveEdition\
     sdhdship.exe
     dinput8.dll
     plugins\
-        SDUncut.asi
+        SDEncore.asi
 ```
 
 注意 `dinput8.dll` 要和 `sdhdship.exe` 在同一层，不要多套一层文件夹。
 
 **第 4 步：启动游戏**
 
-照常从 Steam 启动游戏。`plugins` 里多出 `SDUncut.ini` 和 `SDUncut.log` 两个文件，就说明 mod 已经加载。
+照常从 Steam 启动游戏。`plugins` 里多出 `SDEncore.ini` 和 `SDEncore.log` 两个文件，就说明 mod 已经加载。
 
 ### 怎么用
 
@@ -73,10 +73,10 @@ SleepingDogsDefinitiveEdition\
 
 **不想要某个联系人，或者想改送的枪、枪贩的价格**
 
-用记事本打开 `plugins\SDUncut.ini`，每一项都有中文说明。例如把 `[BoatContact]` 下的 `Enabled` 改成 0 就去掉
+用记事本打开 `plugins\SDEncore.ini`，每一项都有中文说明。例如把 `[BoatContact]` 下的 `Enabled` 改成 0 就去掉
 快艇联络人。保存后重启游戏。
 
-**`plugins` 里没有 `SDUncut.log`**
+**`plugins` 里没有 `SDEncore.log`**
 
 说明 mod 没被加载：检查 `dinput8.dll` 是否和 `sdhdship.exe` 在同一层，杀毒软件有没有删掉它（ASI 加载器偶尔
 会被误报，可以从隔离区还原并把游戏文件夹加入排除项）。如果第 3 步跳过了原有的 `dinput8.dll`，那个文件可能
@@ -84,18 +84,18 @@ SleepingDogsDefinitiveEdition\
 
 **更新**
 
-下载新的 `SDUncut.zip`，只把里面的 `plugins` 文件夹拖进游戏文件夹，Windows 询问时选「替换目标中的文件」。
-`SDUncut.ini` 不在压缩包里，你的设置会保留。
+下载新的 `SDEncore.zip`，只把里面的 `plugins` 文件夹拖进游戏文件夹，Windows 询问时选「替换目标中的文件」。
+`SDEncore.ini` 不在压缩包里，你的设置会保留。
 
 **卸载**
 
-删掉 `plugins` 里的 `SDUncut.asi`、`SDUncut.ini` 和 `SDUncut.log`。如果 `plugins` 里已经没有其他 `.asi` 文件了，
+删掉 `plugins` 里的 `SDEncore.asi`、`SDEncore.ini` 和 `SDEncore.log`。如果 `plugins` 里已经没有其他 `.asi` 文件了，
 `dinput8.dll` 也可以删掉。
 
 **遇到问题怎么反馈**
 
-在 [GitHub Issues](https://github.com/aUsernameWoW/sleeping-dogs-uncut/issues) 里说明情况，并附上
-`plugins\SDUncut.log`。
+在 [GitHub Issues](https://github.com/aUsernameWoW/sleeping-dogs-encore/issues) 里说明情况，并附上
+`plugins\SDEncore.log`。
 
 与 Square Enix、United Front Games 均无关联。
 
@@ -124,15 +124,15 @@ for now.
 
 **Step 1: download**
 
-Download **[SDUncut.zip](https://github.com/aUsernameWoW/sleeping-dogs-uncut/releases/latest/download/SDUncut.zip)**.
+Download **[SDEncore.zip](https://github.com/aUsernameWoW/sleeping-dogs-encore/releases/latest/download/SDEncore.zip)**.
 
 It only contains:
 
 ```text
 dinput8.dll                  ← Ultimate ASI Loader: what makes the game load mods
 plugins\
-    SDUncut.asi              ← the mod
-    SDUncut-THIRD-PARTY-NOTICES.md
+    SDEncore.asi              ← the mod
+    SDEncore-THIRD-PARTY-NOTICES.md
 ```
 
 **Step 2: open the game folder**
@@ -143,7 +143,7 @@ plugins\
 
 **Step 3: put the files in**
 
-1. Open the downloaded `SDUncut.zip`.
+1. Open the downloaded `SDEncore.zip`.
 2. Select `dinput8.dll` and the `plugins` folder and drag both into the game folder.
 3. If Windows asks whether to replace or skip a file, the game folder already has a `dinput8.dll` (you've
    installed a mod before and the loader is there): choose "Skip this file". An existing `plugins` folder is
@@ -156,14 +156,14 @@ SleepingDogsDefinitiveEdition\
     sdhdship.exe
     dinput8.dll
     plugins\
-        SDUncut.asi
+        SDEncore.asi
 ```
 
 `dinput8.dll` has to be next to `sdhdship.exe`, not in a subfolder.
 
 **Step 4: start the game**
 
-Start the game from Steam as usual. When `SDUncut.ini` and `SDUncut.log` appear in `plugins`, the mod is loaded.
+Start the game from Steam as usual. When `SDEncore.ini` and `SDEncore.log` appear in `plugins`, the mod is loaded.
 
 ### How to use
 
@@ -174,10 +174,10 @@ you called is on his way, that contact is hidden; it comes back once he's done.
 
 **Don't want one of the contacts, or want a different gun or the vendor's prices changed**
 
-Open `plugins\SDUncut.ini` in Notepad; every setting is explained in the file. For example `Enabled = 0` under
+Open `plugins\SDEncore.ini` in Notepad; every setting is explained in the file. For example `Enabled = 0` under
 `[BoatContact]` removes the boat contact. Save and restart the game.
 
-**There's no `SDUncut.log` in `plugins`**
+**There's no `SDEncore.log` in `plugins`**
 
 The mod wasn't loaded: check that `dinput8.dll` is next to `sdhdship.exe` and that your antivirus didn't remove
 it (ASI loaders are sometimes flagged; restore it from quarantine and exclude the game folder). If you skipped
@@ -185,17 +185,17 @@ an existing `dinput8.dll` in step 3, that file may not be an ASI loader: back it
 
 **Updating**
 
-Download the new `SDUncut.zip` and drag only its `plugins` folder into the game folder; choose "Replace the files
-in the destination". `SDUncut.ini` isn't in the zip, so your settings stay.
+Download the new `SDEncore.zip` and drag only its `plugins` folder into the game folder; choose "Replace the files
+in the destination". `SDEncore.ini` isn't in the zip, so your settings stay.
 
 **Uninstalling**
 
-Delete `SDUncut.asi`, `SDUncut.ini` and `SDUncut.log` from `plugins`. If there are no other `.asi` files left in
+Delete `SDEncore.asi`, `SDEncore.ini` and `SDEncore.log` from `plugins`. If there are no other `.asi` files left in
 `plugins`, you can delete `dinput8.dll` too.
 
 **Reporting a problem**
 
-Describe it in [GitHub Issues](https://github.com/aUsernameWoW/sleeping-dogs-uncut/issues) and attach
-`plugins\SDUncut.log`.
+Describe it in [GitHub Issues](https://github.com/aUsernameWoW/sleeping-dogs-encore/issues) and attach
+`plugins\SDEncore.log`.
 
 Not affiliated with Square Enix or United Front Games.

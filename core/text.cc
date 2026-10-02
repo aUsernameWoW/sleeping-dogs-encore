@@ -32,7 +32,7 @@ namespace text
 		return count;
 	}
 
-	// "[SDUncut:lang]": the game's text for three of the cut contacts' names, joined with '|'.
+	// "[SDEncore:lang]": the game's text for three of the cut contacts' names, joined with '|'.
 	static void OnLanguageReport(const void* instance)
 	{
 		const std::string reply = skookum::Describe(instance, false);
@@ -73,7 +73,7 @@ namespace text
 			if (setting != "auto") {
 				LOG("text: unknown Language \"%s\", using auto", setting.c_str());
 			}
-			skookum::OnPrintTag("[SDUncut:lang]", &OnLanguageReport);
+			skookum::OnPrintTag("[SDEncore:lang]", &OnLanguageReport);
 			skookum::OnTick([](float) { Detect(); });
 			LOG("text: language from the game's text (auto)");
 			return;
@@ -100,7 +100,7 @@ namespace text
 			return;
 		}
 		skookum::Start("language check",
-			"Debug.println(\"[SDUncut:lang]\", UI.localize_string(\"$PDA_CONTACT_WEAPON\") + \"|\" + "
+			"Debug.println(\"[SDEncore:lang]\", UI.localize_string(\"$PDA_CONTACT_WEAPON\") + \"|\" + "
 			"UI.localize_string(\"$PDA_CONTACT_SWAT\") + \"|\" + UI.localize_string(\"$PDA_CONTACT_GUN\"))");
 	}
 

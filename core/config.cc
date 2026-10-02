@@ -12,7 +12,7 @@ namespace config
 	static std::wstring gPath;
 
 	static constexpr char kDefaultIni[] =
-		"; SDUncut 配置 / configuration\n"
+		"; SDEncore 配置 / configuration\n"
 		"; 1 = 开启 (on), 0 = 关闭 (off)\n"
 		"\n"
 		"[General]\n"
@@ -79,15 +79,15 @@ namespace config
 		"PriceRifle = 6000\n"
 		"\n"
 		"[Debug]\n"
-		"; 在 .asi 旁边写 SDUncut.log。 / Write SDUncut.log.\n"
+		"; 在 .asi 旁边写 SDEncore.log。 / Write SDEncore.log.\n"
 		"Logging = 1\n"
 		"\n"
 		"; 把游戏脚本的调试输出（Debug.print/println，本来是空操作）也写进日志。\n"
 		"; Also log the scripts' debug output (Debug.print/println, which do nothing in this build).\n"
 		"ScriptPrints = 1\n"
 		"\n"
-		"; 开发用脚本控制台：按 ConsoleKey 执行 SDUncut-console.sk 里的脚本，结果写进日志。\n"
-		"; Development console: ConsoleKey runs the scripts in SDUncut-console.sk; the results go to the log.\n"
+		"; 开发用脚本控制台：按 ConsoleKey 执行 SDEncore-console.sk 里的脚本，结果写进日志。\n"
+		"; Development console: ConsoleKey runs the scripts in SDEncore-console.sk; the results go to the log.\n"
 		"Console = 0\n"
 		"\n"
 		"; 虚拟键码，0x7A = F11。 / Virtual-key code, 0x7A = F11.\n"
@@ -157,7 +157,7 @@ namespace config
 
 	void Load(const std::wstring& dir)
 	{
-		gPath = dir + L"\\SDUncut.ini";
+		gPath = dir + L"\\SDEncore.ini";
 
 		if (GetFileAttributesW(gPath.c_str()) == INVALID_FILE_ATTRIBUTES)
 		{
