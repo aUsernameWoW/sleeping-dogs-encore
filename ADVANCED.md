@@ -115,7 +115,7 @@ Visual Studio 2022（v143），Windows SDK 10.0.26100。项目需要放在工作
   - [SDK](https://github.com/SDmodding/SDK)：游戏里的类名和数据结构；
   - [Files](https://github.com/SDmodding/Files) 里导出的属性集、本地化文本、动作树和符号表（QSymbolsDictionary）；
   - [BigFileSystem](https://github.com/SDmodding/BigFileSystem)、[TheoryEngine](https://github.com/SDmodding/TheoryEngine)，以及 sneakyevil 的 [SD-BigFileExplorer](https://github.com/sneakyevil/SD-BigFileExplorer) 和 [Ekey](https://github.com/Ekey) 的 SDDEUnpacker 里的文件名列表：
-    我们照着它们写了读取游戏资源包（`.big`）的工具，游戏脚本和任务数据都是用它从资源包里取出的。
+    读取游戏资源包（`.big`）的工具是照着它们写的，游戏脚本和任务数据都是用它从资源包里取出的。
 - Keylol 上的 [PS4 官方中文移植 + 粤语修正补丁](https://keylol.com/t987308-1-1)（SneakyEvil、MuYou 等）：中文台词里的人名和叫法沿用
   其中 PS4 版官方中文的译法，中文字幕用它的字体。
 
@@ -134,7 +134,7 @@ Visual Studio 2022（v143），Windows SDK 10.0.26100。项目需要放在工作
 **工具**
 
 - [IDA Pro](https://hex-rays.com/ida-pro)（Hex-Rays）和 [ida-pro-mcp](https://github.com/mrexodia/ida-pro-mcp)（mrexodia）：分析游戏程序。
-- [Claude Code](https://claude.com/claude-code)（Anthropic）：这个 mod 的代码、文档和逆向分析几乎全部由 Claude 完成；作者负责提出需求、把握方向和在游戏里测试，代码审查得很少。
+- [Claude Code](https://claude.com/claude-code)（Anthropic）：这个 mod 完全是用 Claude Fable 和 Opus vibe coding 写出来的，代码、文档和逆向分析都出自 Claude，几乎没有经过人工审查。
 
 **游戏与商标**
 
@@ -268,7 +268,7 @@ This mod uses or builds on the work of these people and projects. Thank you.
   - the [SDK](https://github.com/SDmodding/SDK): the game's class names and data structures;
   - the property sets, localization text, action trees and symbol names (QSymbolsDictionary) exported in [Files](https://github.com/SDmodding/Files);
   - [BigFileSystem](https://github.com/SDmodding/BigFileSystem), [TheoryEngine](https://github.com/SDmodding/TheoryEngine), and the file name lists in sneakyevil's [SD-BigFileExplorer](https://github.com/sneakyevil/SD-BigFileExplorer) and in [Ekey](https://github.com/Ekey)'s
-    SDDEUnpacker: our tool for reading the game's `.big` archives follows them; the game's scripts and mission data were taken out of the archives with it.
+    SDDEUnpacker: the tool that reads the game's `.big` archives follows them; the game's scripts and mission data were taken out of the archives with it.
 - The [PS4 official Chinese port + Cantonese fix](https://keylol.com/t987308-1-1) on Keylol (SneakyEvil, MuYou and others): the
   Chinese lines use the names of its official PS4 Chinese text, and Chinese subtitles use its fonts.
 
@@ -288,9 +288,8 @@ This mod uses or builds on the work of these people and projects. Thank you.
 **Tools**
 
 - [IDA Pro](https://hex-rays.com/ida-pro) (Hex-Rays) and [ida-pro-mcp](https://github.com/mrexodia/ida-pro-mcp) (mrexodia): analyzing the game's code.
-- [Claude Code](https://claude.com/claude-code) (Anthropic): almost all of this mod's code, documentation and reverse
-  engineering was done by Claude; the author set the goals, steered and tested in game, and reviewed little of the
-  code.
+- [Claude Code](https://claude.com/claude-code) (Anthropic): this mod was fully vibe-coded with Claude Fable and Opus; its code,
+  documentation and reverse engineering are all Claude's, with little human review.
 
 **The game and trademarks**
 
