@@ -1,0 +1,6 @@
+# Build output and IDE state
+build/
+.vs/
+*.user
+.claude/settings.local.json
+__pycache__/
