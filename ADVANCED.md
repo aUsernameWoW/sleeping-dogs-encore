@@ -122,6 +122,7 @@ Visual Studio 2022（v143），Windows SDK 10.0.26100。项目需要放在工作
 
 - Sleeping Dogs Wiki 的 [Cut Content](https://sleepingdogs.fandom.com/wiki/Cut_Content) 页面：早已记录了 2011 年 11 月原型里的「SWAT 联系人」，以及它留在游戏文件里的头像。
 - [SDmodding](https://github.com/SDmodding)，几乎全部出自 [sneakyevil](https://github.com/sneakyevil) 一人之手。这个 mod 用到了：
+  - SDmodding 随 [SDK](https://github.com/SDmodding/SDK) 发布的 [Visual Studio 2022 项目模板](https://github.com/SDmodding/SDK/releases/tag/vs2022)：这个 mod 的 Visual Studio 工程源自这个模板，编译设置和以 `dllmain.cc` 为起点的源文件结构都来自它；
   - SDmodding 分享的游戏 v1.0 版 exe 和调试符号（PDB，Steam 首发版自带）：游戏的脚本系统、手机联系人和商店的结构都是从这里查到的；
   - [SDK](https://github.com/SDmodding/SDK)：游戏里的类名和数据结构；
   - [Files](https://github.com/SDmodding/Files) 里导出的属性集、本地化文本、动作树和符号表（QSymbolsDictionary）；
@@ -274,6 +275,7 @@ This mod uses or builds on the work of these people and projects. Thank you.
 - The Sleeping Dogs Wiki's [Cut Content](https://sleepingdogs.fandom.com/wiki/Cut_Content) page: it documented the "SWAT contact" of the November 2011 prototype, and
   its portrait left in the game files, long before this mod.
 - [SDmodding](https://github.com/SDmodding), almost all of it the work of one person, [sneakyevil](https://github.com/sneakyevil). This mod used:
+  - the [Visual Studio 2022 project template](https://github.com/SDmodding/SDK/releases/tag/vs2022) released with SDmodding's [SDK](https://github.com/SDmodding/SDK): the mod's Visual Studio project derives from it, including its build settings and the source layout that starts at `dllmain.cc`;
   - the game's v1.0 exe and its debug symbols (PDB, shipped with the original Steam release), shared by
     SDmodding: the game's script system, phone contacts and shops were worked out from them;
   - the [SDK](https://github.com/SDmodding/SDK): the game's class names and data structures;
