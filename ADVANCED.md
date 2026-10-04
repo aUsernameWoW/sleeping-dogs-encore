@@ -20,16 +20,10 @@
 
 游戏的脚本（`Global.big` 里编译好的 SkookumScript）和任务定义里留着几样从没开放的东西：
 
-- **五个手机联系人**：`WeaponContact`、`GunBackup`、`MeleeBackup`、`BoatContact` 和 `E_SC`（SWAT Contact），定义在
-  一个开发者的测试文件 `Definitions_Taylor.xml` 里，不在任何进度图中，所以永远不会解锁。脚本是完整的，对白
-  全是 `[ Placeholder ]` 字幕。通讯录数据（`default-unlockables-contactList-list`）里有它们的名字
-  （`$PDA_CONTACT_WEAPON` 等，中文汉化也翻译了），SWAT 联系人还有自己的头像 `Portrait_Smartphone_SWAT`
-  （Sleeping Dogs Wiki 的 [Cut Content](https://sleepingdogs.fandom.com/wiki/Cut_Content) 页面早已记录：2011 年 11 月的原型里就有这个联系人，头像留在了游戏文件里）。
-- **枪贩**：被砍掉的支线 “Piece of Work”（F_PW）里，Granny Annie 让 Wei 去工地找一个枪贩，买一把 .45 手枪给她。
-  引擎里买枪的流程是完整的：七把枪有“枪械”购买图标，购买会记进 `CashSpentOnWeapons` / `WeaponsPurchased`
+- **五个手机联系人**：`WeaponContact`、`GunBackup`、`MeleeBackup`、`BoatContact` 和 `E_SC`（SWAT Contact），定义在一个开发者的测试文件 `Definitions_Taylor.xml` 里，不在任何进度图中，所以永远不会解锁。脚本是完整的，对白全是 `[ Placeholder ]` 字幕。通讯录数据（`default-unlockables-contactList-list`）里有它们的名字（`$PDA_CONTACT_WEAPON` 等，中文汉化也翻译了），SWAT 联系人还有自己的头像 `Portrait_Smartphone_SWAT`（Sleeping Dogs Wiki 的 [Cut Content](https://sleepingdogs.fandom.com/wiki/Cut_Content) 页面早已记录：2011 年 11 月的原型里就有这个联系人，头像留在了游戏文件里）。
+- **枪贩**：被砍掉的支线 “Piece of Work”（F_PW）里，Granny Annie 让 Wei 去工地找一个枪贩，买一把 .45 手枪给她。引擎里买枪的流程是完整的：七把枪有“枪械”购买图标，购买会记进 `CashSpentOnWeapons` / `WeaponsPurchased`
   统计；但物品表里所有枪的价格都是占位的 HK$10，名字是直接写的英文。正式版里没有任何人卖枪（属性集里
-  `Vendors-WeaponVendor` 这个分类下是三个卖鱼的）。F_PW 本身没有接进进度图，它用到的地图对象也没找到，
-  所以这个支线没有恢复。
+  `Vendors-WeaponVendor` 这个分类下是三个卖鱼的）。F_PW 本身没有接进进度图，它用到的地图对象也没找到，所以这个支线没有恢复。
 
 ### 这个 mod 做了什么
 
@@ -42,12 +36,9 @@
 | 快艇联络人 | 在马路刷车点刷快艇（脚本自己写着“等有了随机的刷船点就能用”） | 用游戏后来加的 `_find_boat_spawn_xform`，在最近的水边放一艘空艇并标在地图上 |
 | 特勤联络人 | 占位的混混开 SWAT 车来，交钥匙后还坐在驾驶座上 | SWAT 警员送车，交钥匙后下车走开，车解锁并标在地图上 |
 
-台词换成正式文本（说话人用游戏自己的联系人名字）。原版的冷却时间（`repeatableinterval="5"`）只有 5 秒，所以
-没有冷却：联系人在服务进行中隐藏，结束后马上能再叫。
+台词换成正式文本（说话人用游戏自己的联系人名字）。原版的冷却时间（`repeatableinterval="5"`）只有 5 秒，所以没有冷却：联系人在服务进行中隐藏，结束后马上能再叫。
 
-枪贩：`SDEncore.ini` 的每个 `Spot` 是一个摊位。你走近 60 m 时，摊位上出现一个水街的人，像 F_PW 的枪贩那样用
-脚本发起购买对话；扣了钱就把枪发给你（`equip_firearm`，满弹药），你离开 90 m 后他离开。物品表里枪的价格、
-名字和描述在内存里改成 ini 的价格和对应语言的文本。
+枪贩：`SDEncore.ini` 的每个 `Spot` 是一个摊位。你走近 60 m 时，摊位上出现一个水街的人，像 F_PW 的枪贩那样用脚本发起购买对话；扣了钱就把枪发给你（`equip_firearm`，满弹药），你离开 90 m 后他离开。物品表里枪的价格、名字和描述在内存里改成 ini 的价格和对应语言的文本。
 
 ### 原理
 
@@ -87,13 +78,11 @@
 | `[Debug] Console` / `ConsoleKey` | 0 / F11 | 开发用：按键执行 `SDEncore-console.sk`。 |
 | `[Debug] VendorHereKey` | 0 | 开发用：按键在你面前放一个测试枪贩，并把位置按 `Spot` 格式写进日志。 |
 
-改完重启游戏生效。开发时，`plugins` 里放一个 `SDEncore-<联系人>.sk`（如 `SDEncore-WeaponContact.sk`）可以替换
-该联系人的脚本，每次拨打时重新读取。
+改完重启游戏生效。开发时，`plugins` 里放一个 `SDEncore-<联系人>.sk`（如 `SDEncore-WeaponContact.sk`）可以替换该联系人的脚本，每次拨打时重新读取。
 
 ### 需求与兼容性
 
-- 《热血无赖：终极版》的两个发行版本（当前 Steam 版和旧版 v1.0，特征码在两者上都唯一匹配），Windows 10/11 x64。
-  不依赖 Windows 专有服务，应当能在 Wine/Proton/CrossOver 下运行（未测试）。
+- 《热血无赖：终极版》的两个发行版本（当前 Steam 版和旧版 v1.0，特征码在两者上都唯一匹配），Windows 10/11 x64。不依赖 Windows 专有服务，应当能在 Wine/Proton/CrossOver 下运行（未测试）。
 - 任意 ASI 加载器，例如 [Ultimate ASI Loader](https://github.com/ThirteenAG/Ultimate-ASI-Loader)（`SDEncore.zip`
   里自带一份，作为 `dinput8.dll`）。
 - 不修改任何游戏文件。中文字幕需要中文汉化提供的字体。
@@ -101,17 +90,12 @@
 ### 下载
 
 [Releases](https://github.com/aUsernameWoW/sleeping-dogs-encore/releases) 里每个版本都有 `SDEncore.zip`（加载器 +
-mod）、`SDEncore.asi`（只有 mod）、`SDEncore.pdb`（调试符号）和 `THIRD-PARTY-NOTICES.md`。`main` 上每次提交都会自动
-编译、测试并发布为预发布版 `build-<N>`（没有在游戏里测过）；在游戏里验证过的构建会转为正式版，README 里的下载
-链接指向最新的正式版。
+mod）、`SDEncore.asi`（只有 mod）、`SDEncore.pdb`（调试符号）和 `THIRD-PARTY-NOTICES.md`。`main` 上每次提交都会自动编译、测试并发布为预发布版 `build-<N>`（没有在游戏里测过）；在游戏里验证过的构建会转为正式版，README 里的下载链接指向最新的正式版。
 
 ### 编译与测试
 
 Visual Studio 2022（v143），Windows SDK 10.0.26100。项目需要放在工作区的 `mods\SDEncore`，工作区里还要有
-`reference\minhook`（[MinHook](https://github.com/TsudaKageyu/minhook) v1.3.4 源码，随项目一起编译）。在工作区
-根目录运行 `.\tools\build.ps1 -Mod SDEncore -Test`：`load_test` 在游戏之外加载 .asi，不能崩溃，写出默认 ini，并报告
-找不到游戏函数；`script_test` 生成每个联系人（每种语言）和枪贩的脚本，检查游戏的 SkookumScript 编译器会拒绝的写法
-（用圆括号分组、括号不配对、没填的占位符）。GitHub Actions 用同样的布局编译（`-warnAsError`）、测试、打包并发布预发布版，依赖版本固定在
+`reference\minhook`（[MinHook](https://github.com/TsudaKageyu/minhook) v1.3.4 源码，随项目一起编译）。在工作区根目录运行 `.\tools\build.ps1 -Mod SDEncore -Test`：`load_test` 在游戏之外加载 .asi，不能崩溃，写出默认 ini，并报告找不到游戏函数；`script_test` 生成每个联系人（每种语言）和枪贩的脚本，检查游戏的 SkookumScript 编译器会拒绝的写法（用圆括号分组、括号不配对、没填的占位符）。GitHub Actions 用同样的布局编译（`-warnAsError`）、测试、打包并发布预发布版，依赖版本固定在
 `.github/reference.env` 和 `.github/asi-loader.env`。
 
 ### 致谢
@@ -126,21 +110,17 @@ Visual Studio 2022（v143），Windows SDK 10.0.26100。项目需要放在工作
   - SDmodding 分享的游戏 v1.0 版 exe 和调试符号（PDB，Steam 首发版自带）：游戏的脚本系统、手机联系人和商店的结构都是从这里查到的；
   - [SDK](https://github.com/SDmodding/SDK)：游戏里的类名和数据结构；
   - [Files](https://github.com/SDmodding/Files) 里导出的属性集、本地化文本、动作树和符号表（QSymbolsDictionary）；
-  - [BigFileSystem](https://github.com/SDmodding/BigFileSystem)、[TheoryEngine](https://github.com/SDmodding/TheoryEngine)，以及 sneakyevil 的 [SD-BigFileExplorer](https://github.com/sneakyevil/SD-BigFileExplorer) 和 [Ekey](https://github.com/Ekey) 的 SDDEUnpacker 里的文件名列表：
-    读取游戏资源包（`.big`）的工具是照着它们写的，游戏脚本和任务数据都是用它从资源包里取出的。
-- Keylol 上的 [PS4 官方中文移植 + 粤语修正补丁](https://keylol.com/t987308-1-1)（SneakyEvil、MuYou 等）：中文台词里的人名和叫法沿用
-  其中 PS4 版官方中文的译法，中文字幕用它的字体。
+  - [BigFileSystem](https://github.com/SDmodding/BigFileSystem)、[TheoryEngine](https://github.com/SDmodding/TheoryEngine)，以及 sneakyevil 的 [SD-BigFileExplorer](https://github.com/sneakyevil/SD-BigFileExplorer) 和 [Ekey](https://github.com/Ekey) 的 SDDEUnpacker 里的文件名列表：读取游戏资源包（`.big`）的工具是照着它们写的，游戏脚本和任务数据都是用它从资源包里取出的。
+- Keylol 上的 [PS4 官方中文移植 + 粤语修正补丁](https://keylol.com/t987308-1-1)（SneakyEvil、MuYou 等）：中文台词里的人名和叫法沿用其中 PS4 版官方中文的译法，中文字幕用它的字体。
 
 **游戏原有的内容**
 
-- 恢复的内容照游戏里被砍掉的原版脚本移植，部分台词改写自原版的占位台词；它们由 United Front Games 编写，
-  版权归 Square Enix 所有。
+- 恢复的内容照游戏里被砍掉的原版脚本移植，部分台词改写自原版的占位台词；它们由 United Front Games 编写，版权归 Square Enix 所有。
 - SkookumScript（Agog Labs）：游戏的脚本语言，mod 用游戏自带的编译器运行这些脚本。
 
 **mod 里包含的代码**（许可证全文见 [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md)）
 
-- [Ultimate ASI Loader](https://github.com/ThirteenAG/Ultimate-ASI-Loader)（ThirteenAG）：压缩包里的 `dinput8.dll`，让游戏加载 mod。它本身还包含 MinHook、
-  [miniz](https://github.com/richgel999/miniz)（Rich Geldreich 等）和 [praydog](https://github.com/praydog) 的 FunctionHookMinHook。
+- [Ultimate ASI Loader](https://github.com/ThirteenAG/Ultimate-ASI-Loader)（ThirteenAG）：压缩包里的 `dinput8.dll`，让游戏加载 mod。它本身还包含 MinHook、[miniz](https://github.com/richgel999/miniz)（Rich Geldreich 等）和 [praydog](https://github.com/praydog) 的 FunctionHookMinHook。
 - [MinHook](https://github.com/TsudaKageyu/minhook)（Tsuda Kageyu，内含 Vyacheslav Patkov 的 Hacker Disassembler Engine）：mod 靠它接入游戏。
 
 **工具**
@@ -150,8 +130,7 @@ Visual Studio 2022（v143），Windows SDK 10.0.26100。项目需要放在工作
 
 **游戏与商标**
 
-《热血无赖：终极版》（Sleeping Dogs: Definitive Edition）由 United Front Games 开发、Square Enix 发行，
-游戏及其内容的版权归 Square Enix 所有。
+《热血无赖：终极版》（Sleeping Dogs: Definitive Edition）由 United Front Games 开发、Square Enix 发行，游戏及其内容的版权归 Square Enix 所有。
 
 与 Square Enix、United Front Games 均无关联。
 
