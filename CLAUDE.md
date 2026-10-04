@@ -98,4 +98,15 @@ something over; Chinese in Skookum string literals.
 ## Testing
 
 `tools\build.ps1 -Mod SDEncore -Test -Deploy`. `load_test` loads the .asi outside the game (default ini, every
-function reported missing).
+function reported missing). `script_test` includes `contacts.cc`/`vendor.cc` (Skookum, phone and items stubbed),
+builds every script in every language and rejects grouping parentheses (Skookum reads a `(` that starts an expression
+as a closure's parameters: `SDTaxi\CLAUDE.md`), unbalanced brackets and unfilled `{PLACEHOLDERS}`.
+
+## Test round 1 result (2026-10-04, the GitHub build on another machine)
+
+The language check worked (English). Calling GunBackup: `Whitespace required` at `(UI.localize_string(...) + ...)`:
+`Say` wrapped the contact's lines in parentheses (every contact's script failed the same way; the courier's
+`create_at_pos((pos + (left *= 2.0)), ...)` and the test vendor's `pos + (dir *= 2.0)` would have too, copied from the
+`skoo` dump, which printed operators that way). The call screen stayed on "Connected", since the script hangs up
+itself: a script that doesn't compile now gets `PDA.end_phone_call()` run on its own. SDTaxi's contact was missing in
+the same run (its `LaunchSubOption` scan, see `SDTaxi\CLAUDE.md`).

@@ -111,7 +111,8 @@ mod）、`SDEncore.asi`（只有 mod）、`SDEncore.pdb`（调试符号）和 `T
 Visual Studio 2022（v143），Windows SDK 10.0.26100。项目需要放在工作区的 `mods\SDEncore`，工作区里还要有
 `reference\minhook`（[MinHook](https://github.com/TsudaKageyu/minhook) v1.3.4 源码，随项目一起编译）。在工作区
 根目录运行 `.\tools\build.ps1 -Mod SDEncore -Test`：`load_test` 在游戏之外加载 .asi，不能崩溃，写出默认 ini，并报告
-找不到游戏函数。GitHub Actions 用同样的布局编译（`-warnAsError`）、测试、打包并发布预发布版，依赖版本固定在
+找不到游戏函数；`script_test` 生成每个联系人（每种语言）和枪贩的脚本，检查游戏的 SkookumScript 编译器会拒绝的写法
+（用圆括号分组、括号不配对、没填的占位符）。GitHub Actions 用同样的布局编译（`-warnAsError`）、测试、打包并发布预发布版，依赖版本固定在
 `.github/reference.env` 和 `.github/asi-loader.env`。
 
 ### 致谢
@@ -261,8 +262,10 @@ become full releases, which the README's download link points to.
 
 Visual Studio 2022 (v143), Windows SDK 10.0.26100. The project has to sit in the workspace's `mods\SDEncore`, with
 `reference\minhook` ([MinHook](https://github.com/TsudaKageyu/minhook) v1.3.4 sources, compiled in) next to it. From
-the workspace root, `.\tools\build.ps1 -Mod SDEncore -Test` builds and runs `load_test`, which loads the .asi outside
-the game: it must not crash, must write its default ini and must report the game functions missing. GitHub Actions
+the workspace root, `.\tools\build.ps1 -Mod SDEncore -Test` builds and runs the tests: `load_test` loads the .asi
+outside the game (it must not crash, must write its default ini and must report the game functions missing), and
+`script_test` builds every contact's script (in each language) and the vendors' and checks them for what the game's
+SkookumScript compiler rejects (parentheses used for grouping, unbalanced brackets, unfilled placeholders). GitHub Actions
 builds the same layout (`-warnAsError`), tests, packages and publishes prereleases; the dependencies are pinned in
 `.github/reference.env` and `.github/asi-loader.env`.
 

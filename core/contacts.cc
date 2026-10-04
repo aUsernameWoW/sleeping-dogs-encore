@@ -89,7 +89,7 @@ if found.not() [
 	static constexpr char kCourier[] = R"sk(
 	!car !contact !met
 	car: c_world.spawn_object_at_xform(spawn_xform, '{VEHICLE}', "SDEncore_{KEY}_Car")<>Vehicle
-	contact: Character.create_at_pos((spawn_xform.get_pos() + (spawn_xform.get_dir_left() *= 2.0)), nil, '{CHARACTER}', "SDEncore_{KEY}", {BEHAVIOUR}, false)
+	contact: Character.create_at_pos(spawn_xform.get_pos() + spawn_xform.get_dir_left() *= 2.0, nil, '{CHARACTER}', "SDEncore_{KEY}", {BEHAVIOUR}, false)
 	if car.is_nil() or contact.is_nil() [
 		Debug.println("[SDEncore] {TAG}: spawning failed: car ", car, ", contact ", contact)
 		car%despawn()
@@ -335,14 +335,16 @@ if found.not() [
 
 	static std::wstring gDir;
 
-	// Wei's line, or the contact's under the name the game's text gives him.
+	// Wei's line, or the contact's under the name the game's text gives him. No parentheses around the sum: Skookum
+	// has none for grouping (a `(` starting an expression opens a closure's parameter list, and the compile fails),
+	// and `+` takes the rest of the argument as its operand anyway (operators are right-associative, no precedence).
 	static std::string Say(const char* nameKey, const text::Line& line)
 	{
 		const std::string said = std::string(text::Get(kSeparator)) + text::Get(line);
 		if (!nameKey) {
 			return text::Literal(text::Get(kWei) + said);
 		}
-		return std::string("(UI.localize_string(") + text::Literal(nameKey) + ") + " + text::Literal(said) + ")";
+		return "UI.localize_string(" + text::Literal(nameKey) + ") + " + text::Literal(said);
 	}
 
 	static std::string Number(float value)
@@ -439,6 +441,10 @@ if found.not() [
 			LOG("contacts: %s (%s script, %s; vehicle %s, character %s, weapon %s)", s.mKey, overridden ? "override file" : "built-in",
 				text::Name(text::Current()), s.mConfig->mVehicle.c_str(), s.mConfig->mCharacter.c_str(), s.mConfig->mWeapon.c_str());
 			skookum::Run* run = skookum::Start(s.mKey, source);
+			if (!run->mCompiled && s.mHangUp) {
+				// The script hangs up itself; without it the call screen would stay on "Connected".
+				skookum::Start("hang-up", "PDA.end_phone_call()");
+			}
 			if (!run->mFinished) {
 				s.mRun = run;
 			}

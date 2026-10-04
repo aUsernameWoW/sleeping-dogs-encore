@@ -101,7 +101,7 @@ loop [
 !player !pos !facing !vendor !dir
 player: World.c_player
 dir: player.get_dir()
-pos: player.get_pos() + (dir *= 2.0)
+pos: player.get_pos() + dir *= 2.0
 facing: player.get_pos()
 Debug.println("[SDEncore:spot]", pos)
 Debug.println("[SDEncore:facing]", facing)
