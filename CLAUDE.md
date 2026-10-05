@@ -134,3 +134,57 @@ The language check worked (English). Calling GunBackup: `Whitespace required` at
 `skoo` dump, which printed operators that way). The call screen stayed on "Connected", since the script hangs up
 itself: a script that doesn't compile now gets `PDA.end_phone_call()` run on its own. SDTaxi's contact was missing in
 the same run (its `LaunchSubOption` scan, see `SDTaxi\CLAUDE.md`).
+
+## NPCs, cars and car doors (2026-10-05, from the action trees, the scripts and the installed-build IDA database)
+
+Worth knowing for any mod that sends an NPC by car (SDTaxi too):
+
+- **Which get-out plays**: `Vehicle.act` `Interactions\Action\GetOut\AsDriver` picks, in this order: NotOnWheels,
+  ActionHijackStart, Blocked, DismountShoot, VehicleMoving (speed >= 40/60: aggressive bail-outs), boats, vans,
+  trucks, minibus, DDBus, `GetOutCar`. `GetOutCar\Anims`: `Car_Casual` (`Vehicle\Queries\OccupantShouldUseCasualAnims`
+  = the character property `UseCasualGetInGetOutAnims`, which scripts give Wei in Bride to Be and the valet
+  `M_IMP_Valet` has in its archetype), `IntoCombat` (property `SkipCombatEntry`), `Default` (`Car_Drive_Out`). Vans
+  and trucks have one anim each, no casual one. `RidgeSportSWAT01` (parent `CopSUV`) is a car.
+- **Why doors stay open**: the get-out spawns a door controller on the vehicle
+  (`ObjectSpawns\DoorControllers\<Car|Van|Truck|Minibus>\Driver\GetOut\Open\<variant>`). `Regular` watches the
+  vehicle's driver for 1.6 s (car; van 1.86 s): if the driver target is gone by then, the door freezes open and is
+  left `ATT_SIMULATED_NO_MOTOR` (free to swing, never shut). The character may cut `Car_Drive_Out` from 1.2 s
+  (`Vehicle\Queries\GetOutFast`: a Walk/Jog one-shot, `ExitVehicleModifierFast`, a grapple lock, Focus, or speed
+  >= 7.5), and the thug AI's Follow (`TargetOnFoot\ExitVehicle`, `EndExit` at 1.2 s once not uninterruptible)
+  jogs off at once: the door stays open in his path. `Car_Casual` is uninterruptible for 2.25 s, `GetOutFast` only
+  from 3.15 s, and its door controller has no interrupted branch: the door always shuts. The van/truck
+  `AutoCloseDoor` banks are switched off (`False`). Scripts can only animate the minibus passenger door and truck
+  cargo doors (`Vehicle.open/close_passenger_door`, `_set_open_truck_doors`); playing
+  `DoorControllers\Car\Driver\GetIn\Close\Regular` on a car would shut its driver door but also starts the engine.
+- **A calm scripted exit**: `Character._exit_vehicle()` sets `eAI_OBJECTIVE_GET_OUT_OF_VEHICLE` (ScriptObjectives,
+  which end with objective none). With no follow objective nothing cuts the anim short; give the next objective
+  after it (the ambulance response and the Car Valet do the same).
+- **The AI driving to the player**: the thug AI's Follow (`FollowBehaviour.act` → `VehicleBehaviour.act`
+  `TargetOnFoot`: `DriveNear` with a 20 m tolerance, 0.75 s, then the exit at speed <= 5) drives Water Street thug
+  archetypes fine (WeaponContact, build-8). `CJ_SWAT01_Character` with `Thug_behaviour.act` never moved the truck
+  (build-14; cause not found; the game's scripts only ever pair police archetypes with `Cop_behaviour.act`).
+  Scripted driving works with any driver: SDTaxi's loop (`_path_to_xform(player.get_xform(), true)` re-aimed every
+  5 s, `stop()` repeated, here in `kSwatService`) had the truck at speed ~40 within 2 s and within 12 m of the
+  player 3-4 s later.
+- **A cop doesn't keep a script's objective**: `Cop_behaviour.act` `MasterSpawn` always runs
+  `PRIVATE_BANK\InfractionResponse` (player heat → `eAI_OBJECTIVE_PURSUIT_TARGET`) and `CopStimulus`; Investigate
+  and Pursuit end with objective none, and a cop at the wheel with no objective patrols
+  (`Actions\DrivingDummy\PatrolFallback`). Separately, in heat chases (`IsInFight`), `CopSystem::Reacquire` adopts
+  units whose `CopUnitComponent` (+0x1E0) is usable (bit 1), alive (bit 3) and not managed (bit 0): usable comes
+  from the property `UsableByCopSystem` (`default-component-CopUnit`: true; the event cop
+  `F_CNY_HelpRookie1_Character` sets it false), read only in `CopUnitComponent::OnAttach`, so it can't be changed
+  on a spawned ped from script.
+- **Despawning**: `Actor.despawn(true)` waits for the suspension, and a ped with `PedSuspendOption_SuspendAllowed`
+  is suspended as soon as he's off screen, even 3 m away: let him get away first.
+
+## Test results (2026-10-05)
+
+- build-8 on the second machine: WeaponContact (the machine pistol handed over) and SwatContact work. Reported by
+  the user: the couriers' open car door blocks their way (build-13: casual get-out); the SWAT officer joined police
+  patrols, had to be met at the driver's door and vanished when the camera turned (build-14: thug AI, meeting at
+  the truck, leaving 40 m first).
+- build-14 on this machine: the truck never left its spawn point (build-15: driven by script). Two SWAT calls with
+  build-15: on the way at speed ~40, within 12 m in 3-4 s, the officer out ~3.5 s later 7-10 m from the player, the
+  handover (once at 2 m, once at the truck), the player drove off; no standstill logged. The user: much better.
+- Not tried yet: the WeaponContact and backups' casual get-out (does the door shut, do they reach the player), the
+  backups at all, leaving 40 m before despawning.
