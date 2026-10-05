@@ -38,6 +38,8 @@
 
 开车来的人下车时会把车门关上。原版里他一下车就往你这边跑，下车动作被打断，车门开着挡在他路上，他可能卡在车门后原地跑，要你自己走过去。现在他从容下车（`UseCasualGetInGetOutAnims`，游戏里沈威和代客泊车的人用的那种），这个动作在 2.25 秒内不会被打断，车门总会关好。只对轿车有效：面包车和卡车没有这种下车动作。
 
+特勤联络人派来的 SWAT 警员和其他人一样用水街混混的 AI（本 mod 早先给了他警察自己的 AI，他路上碰到巡逻警察就会被警察的逻辑带走，跟着去巡逻；还会一直坐在驾驶座上，要你贴到车门边才交车）。你走到停下的车旁边（3.5 米内）也算碰头。办完事的人走开或开车离开，离你 40 米远（或 90 秒后）才会在视线外消失，不会一转镜头就不见。
+
 台词换成正式文本（说话人用游戏自己的联系人名字）。原版的冷却时间（`repeatableinterval="5"`）只有 5 秒，所以没有冷却：联系人在服务进行中隐藏，结束后马上能再叫。
 
 枪贩：`SDEncore.ini` 的每个 `Spot` 是一个摊位。你走近 60 m 时，摊位上出现一个水街的人，像 F_PW 的枪贩那样用脚本发起购买对话；扣了钱就把枪发给你（`equip_firearm`，满弹药），你离开 90 m 后他离开。物品表里枪的价格、名字和描述在内存里改成 ini 的价格和对应语言的文本。
@@ -173,6 +175,12 @@ which cut his get-out short and left the door open in his way: he could get stuc
 until you walked over. He now gets out casually (`UseCasualGetInGetOutAnims`, as Wei and a valet do in the
 game), which can't be cut short in the first 2.25 s and always shuts the door. Cars only: vans and trucks have no
 casual get-out.
+
+The SWAT contact's officer runs the Water Street thug AI like the others (an earlier SDEncore gave him the police
+AI, whose own police logic took him over when he met a patrol on the way: he joined it and drove off; he also stayed
+at the wheel, so you had to stand at the driver's door). Walking up to the stopped truck (within 3.5 m) also counts
+as meeting him. A man who's done walks or drives off and disappears out of sight only once he's 40 m away (or
+after 90 s), not the moment the camera turns.
 
 The lines are real ones (the contact speaks under the game's own name for him). The originals' cooldown
 (`repeatableinterval="5"`) is 5 seconds, so there is none: a contact is hidden while it's busy and back right after.

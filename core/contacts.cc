@@ -84,8 +84,13 @@ if found.not() [
 )sk";
 
 	// A man in a car, sent to the player (WeaponContact, GunBackup, MeleeBackup, SWAT Contact). {SERVICE} runs once
-	// he's on the way; afterwards he goes ({LEAVE} if he's still up) and is despawned once out of sight, as the
-	// gameslices' cleanup did (despawn(true)).
+	// he's on the way; afterwards he goes ({DEPART}).
+	// All of them, the SWAT officer too, get the thug AI (Thug_behaviour.act) and the Water Street faction, as in
+	// every original. The officer first had his archetype's cop AI and faction LAW: the cop AI's own police logic
+	// (Cop_behaviour.act PRIVATE_BANK\InfractionResponse, Objectives\Investigate) replaces the script's objective
+	// with a pursuit or an investigation, after which a cop at the wheel falls back to patrolling
+	// (Actions\DrivingDummy\PatrolFallback); 2026-10-05: meeting police patrols on the way, he joined them and drove
+	// off. The cop AI's Follow also kept him at the wheel, so the player had to stand at the driver's door.
 	// He gets out the casual way (UseCasualGetInGetOutAnims, which the game gives Wei in Bride to Be and a valet in
 	// his archetype). The thug AI's Follow behaviour stops within 20 m of the player, gets out and jogs off as soon as
 	// the get-out may be cut short (1.2 s, Vehicle\Queries\GetOutFast); the car's door controller
@@ -96,7 +101,7 @@ if found.not() [
 	static constexpr char kCourier[] = R"sk(
 	!car !contact !met
 	car: c_world.spawn_object_at_xform(spawn_xform, '{VEHICLE}', "SDEncore_{KEY}_Car")<>Vehicle
-	contact: Character.create_at_pos(spawn_xform.get_pos() + spawn_xform.get_dir_left() *= 2.0, nil, '{CHARACTER}', "SDEncore_{KEY}", {BEHAVIOUR}, false)
+	contact: Character.create_at_pos(spawn_xform.get_pos() + spawn_xform.get_dir_left() *= 2.0, nil, '{CHARACTER}', "SDEncore_{KEY}", "Thug_behaviour.act", false)
 	if car.is_nil() or contact.is_nil() [
 		Debug.println("[SDEncore] {TAG}: spawning failed: car ", car, ", contact ", contact)
 		car%despawn()
@@ -107,7 +112,7 @@ if found.not() [
 		contact.minimap_add_blip("friendly", false)
 		{ARM}
 		contact.force_enter_vehicle(car, true)
-		{FACTION}
+		contact.set_faction('TRIAD_WINSTON')
 		contact.get_properties().append_property_boolean('CanEnterExitVehicle', true)
 		contact.get_properties().append_property_boolean('UseCasualGetInGetOutAnims', true)
 		contact.enable_script_control(false)
@@ -122,21 +127,43 @@ if found.not() [
 			{WATCH}
 		]
 		contact%minimap_remove_blip()
+		{DEPART}
+		Debug.println("[SDEncore] {TAG}: done (met the player: ", met, ")")
+	]
+)sk";
+
+	// He goes ({LEAVE} if he's still up) and is despawned once out of sight, as the gameslices' cleanup did
+	// (despawn(true): when he's suspended, which a ped is as soon as he's off screen), but only once he's 40 m away
+	// or after 90 s (2026-10-05: the SWAT officer vanished as soon as the camera turned). His car goes with him if he
+	// drives it.
+	static constexpr char kLeave[] = R"sk(
 		if contact.is_valid_simobject() [
 			if contact.is_knocked_out().not() [
 				contact.set_objective_and_actor("eAI_OBJECTIVE_NONE", player)
 				contact.set_can_wander(true)
 				{LEAVE}
+				race [
+					loop [
+						if contact.is_valid_simobject().not() [
+							exit
+						]
+						if player.distance_actor(contact) > 40.0 [
+							exit
+						]
+						_wait(1.0)
+					]
+					_wait(90.0)
+				]
 			]
-			contact.set_suspend_option('PedSuspendOption_SuspendAllowed')
-			contact.despawn(true)
+			if contact.is_valid_simobject() [
+				{CARGOES}
+				contact.set_suspend_option('PedSuspendOption_SuspendAllowed')
+				contact.despawn(true)
+			]
 		]
-		{AFTER}
-		Debug.println("[SDEncore] {TAG}: done (met the player: ", met, ")")
-	]
 )sk";
 
-	// Until the player is within 2 m of him (the original's _wait_near_actor), 4 minutes, or he's down.
+	// Until the player is within 2 m of him (the original's _wait_near_actor), {MEETCAR}, 4 minutes, or he's down.
 	static constexpr char kMeet[] = R"sk(
 		race [
 			[
@@ -144,6 +171,7 @@ if found.not() [
 				met := true
 				Debug.println("[SDEncore] {TAG}: met the player at ", player.get_pos())
 			]
+			{MEETCAR}
 			[
 				_wait(240.0)
 				Debug.println("[SDEncore] {TAG}: not at the player after 4 minutes")
@@ -194,6 +222,15 @@ if found.not() [
 				]
 				player._wait_infinite()
 			]
+)sk";
+
+	// {CARGOES}: his car, if he drives it (a SWAT truck handed over stays, even with him still at the wheel).
+	static constexpr char kCarGoes[] = R"sk(
+				if car.is_valid_simobject() [
+					if contact.is_the_driver(car) [
+						car.despawn(true)
+					]
+				]
 )sk";
 
 	// Back to his car and away.
@@ -258,8 +295,28 @@ if found.not() [
 		]
 )sk";
 
-	// SWAT Contact: the truck at the meeting. The original left him in the driver's seat; he gets out and walks off,
-	// and the truck is unlocked and marked until the player drives it.
+	// SWAT Contact, {MEETCAR}: the player at the truck, stopped, counts as meeting him, for when he's still at the
+	// wheel (the player is in a car of his own: the thug AI's Follow then follows it and stays in).
+	static constexpr char kMeetTruck[] = R"sk(
+			[
+				loop [
+					if car.is_valid_simobject() [
+						if player.distance_actor(car) < 3.5 [
+							if car.get_speed() < 1.0 [
+								exit
+							]
+						]
+					]
+					_wait(0.25)
+				]
+				met := true
+				Debug.println("[SDEncore] {TAG}: met the player at the truck, ", player.distance_actor(contact), " m from the contact")
+			]
+)sk";
+
+	// SWAT Contact: the truck at the meeting. The original's thug stayed in the driver's seat if he was still in it;
+	// he gets out (the truck stopped first) and walks off, and the truck is unlocked and marked until the player
+	// drives it.
 	static constexpr char kSwatService[] = R"sk(
 		{MEET}
 		if met [
@@ -269,6 +326,12 @@ if found.not() [
 			NIS.hide_letterbox()
 			player.enable_player_script_control(false)
 			if contact.is_the_driver(car) [
+				contact.set_objective_and_actor("eAI_OBJECTIVE_NONE", player)
+				car.stop()
+				race [
+					car._wait_until_stop()
+					_wait(5.0)
+				]
 				race [
 					contact._exit_vehicle()
 					_wait(10.0)
@@ -425,11 +488,12 @@ if found.not() [
 			text::Replace(script, "{SERVICE}", backup ? kBackupService : kind == kSwat ? kSwatService : kWeaponService);
 			text::Replace(script, "{WATCH}", kWatch);
 			text::Replace(script, "{MEET}", kMeet);
+			text::Replace(script, "{MEETCAR}", kind == kSwat ? kMeetTruck : "");
+			// The SWAT officer walks off while the truck waits for the player.
+			text::Replace(script, "{DEPART}", kind == kSwat ? "sync [\n[\n" + std::string(kLeave) + "\n]\n[\n" + kSwatAfter + "\n]\n]" : kLeave);
+			text::Replace(script, "{CARGOES}", kind == kSwat ? "if met.not() [\n" + std::string(kCarGoes) + "\n]" : kCarGoes);
 			text::Replace(script, "{LEAVE}", kind == kSwat ? "if met.not() [\n" + std::string(kDriveOff) + "\n]" : backup ? "" : kDriveOff);
-			text::Replace(script, "{AFTER}", kind == kSwat ? kSwatAfter : "");
 			text::Replace(script, "{ARM}", kind == kGun ? "contact.equip_firearm('{WEAPON}')" : kind == kMelee ? "contact.equip_melee('{WEAPON}')" : "");
-			text::Replace(script, "{FACTION}", kind == kSwat ? "" : "contact.set_faction('TRIAD_WINSTON')");
-			text::Replace(script, "{BEHAVIOUR}", kind == kSwat ? "nil" : "\"Thug_behaviour.act\"");
 			text::Replace(script, "{OBJECTIVE}", backup ? "eAI_OBJECTIVE_BE_ALLY" : "eAI_OBJECTIVE_FOLLOW_TARGET");
 			text::Replace(script, "{LEASH}", Number(gConfig.mBackupLeash));
 			text::Replace(script, "{TIMELIMIT}", gConfig.mBackupMinutes > 0

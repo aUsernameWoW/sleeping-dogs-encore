@@ -72,8 +72,19 @@ Built from SDTaxi's core (`skookum.cc`, `phone.cc`, `console.cc`, `crash.cc`, `s
   - boat: an empty boat at `_find_boat_spawn_xform` (15-150 m, then 300 m), unlocked and blipped until boarded
     (the original sent a thug driving a boat on the road search: "Once I can get a random boat spawn position,
     this will work.");
-  - SWAT: a SWAT officer (`CJ_SWAT01_Character`, faction LAW) instead of the placeholder thug, who gets out and
-    walks off; the truck unlocked and blipped until the player drives it.
+  - SWAT: a SWAT officer (`CJ_SWAT01_Character`) instead of the placeholder thug, on the thug AI with faction
+    `TRIAD_WINSTON` like every courier. He first had his archetype's cop AI and faction LAW: the cop AI's own police
+    logic (`Cop_behaviour.act` `PRIVATE_BANK\InfractionResponse`, `Objectives\Investigate`) replaces the
+    objective with a pursuit or an investigation, after which a cop at the wheel patrols
+    (`Actions\DrivingDummy\PatrolFallback`): on 2026-10-05 he joined police patrols he met and drove off; the cop
+    AI's Follow also kept him at the wheel, so the player had to stand at the driver's door. The player at the
+    stopped truck (3.5 m) also counts as meeting him; he gets out (truck stopped first) and walks off; the truck
+    unlocked and blipped until the player drives it. The archetype and the truck (`CopSUV`) still have
+    `default-component-CopUnit` (`UsableByCopSystem` true, read once in `CopUnitComponent::OnAttach`), so during a
+    police chase `CopSystem::Reacquire` could still take them over (untested);
+  - a courier who's done walks or drives off and is despawned out of sight only once 40 m from the player or after
+    90 s (`despawn(true)` waits for the ped's suspension, which comes as soon as he's off screen: the SWAT officer
+    vanished the moment the camera turned); his car goes with him if he drives it.
   - every courier gets out of a car the casual way (`UseCasualGetInGetOutAnims`), so the door gets shut. The thug
     AI's Follow behaviour (`Thug_behaviour.act` `Objectives\Follow\VehicleBehaviour\TargetOnFoot`) parks within
     20 m, exits and jogs off once the get-out stops being uninterruptible (Jog → `Vehicle\Queries\GetOutFast`, 1.2 s
