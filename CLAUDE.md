@@ -74,6 +74,15 @@ Built from SDTaxi's core (`skookum.cc`, `phone.cc`, `console.cc`, `crash.cc`, `s
     this will work.");
   - SWAT: a SWAT officer (`CJ_SWAT01_Character`, faction LAW) instead of the placeholder thug, who gets out and
     walks off; the truck unlocked and blipped until the player drives it.
+  - every courier gets out of a car the casual way (`UseCasualGetInGetOutAnims`), so the door gets shut. The thug
+    AI's Follow behaviour (`Thug_behaviour.act` `Objectives\Follow\VehicleBehaviour\TargetOnFoot`) parks within
+    20 m, exits and jogs off once the get-out stops being uninterruptible (Jog → `Vehicle\Queries\GetOutFast`, 1.2 s
+    into `Car_Drive_Out`); the car's `DoorControllers\Car\Driver\GetOut\Open\Regular` leaves the door swinging
+    (`ATT_SIMULATED_NO_MOTOR`) when the driver is gone before 1.6 s, and the man then ran on the spot behind it
+    until the player walked over (reported 2026-10-05, build-8 on the second machine; the user thought the SWAT
+    officer, who gets out by script after the meeting, didn't). `Car_Casual` is uninterruptible until 2.25 s and its
+    door controller has no interrupted branch. Vans and trucks have no casual get-out. `kWatch` logs where he got out
+    and a 5 s standstill on his way to the player.
 - `core/vendor.cc` + `core/items.cc`: gun vendors at the ini's spots (none by default yet: the spots are to be picked
   with the user in game). Each spot is a looping script: within 60 m the vendor (a Water Street thug) spawns,
   `face_set_requires_greet(false)`, then `_wait_for_scripted_social_dialogue('eFACEACTION_PURCHASE', ..., item)` over

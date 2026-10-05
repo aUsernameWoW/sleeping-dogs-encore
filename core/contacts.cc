@@ -19,7 +19,7 @@ namespace contacts
 	// gun."), are kept where they read fine; the failure lines say why instead of "Can't, sorry. (ERROR)", and the
 	// boat contact's says what the original only hoped for ("Once I can get a random boat spawn position, this
 	// will work."): the game now has World._find_boat_spawn_xform.
-	static constexpr text::Line kWei = { "Wei", "沈偉", "沈伟" };
+	static constexpr text::Line kWei = { "Wei", "沈威", "沈威" };  // the Chinese pack's (the PS4's official text) name for him
 	static constexpr text::Line kSeparator = { ": ", "：", "：" };
 	static constexpr text::Line kOnMyWay = { "Whatever you need. I'll be right there.", "沒問題，我馬上到。", "没问题，我马上到。" };
 	static constexpr text::Line kNoWay = { "Can't get to you there, sorry.", "你那邊我過不去，抱歉。", "你那边我过不去，抱歉。" };
@@ -86,6 +86,13 @@ if found.not() [
 	// A man in a car, sent to the player (WeaponContact, GunBackup, MeleeBackup, SWAT Contact). {SERVICE} runs once
 	// he's on the way; afterwards he goes ({LEAVE} if he's still up) and is despawned once out of sight, as the
 	// gameslices' cleanup did (despawn(true)).
+	// He gets out the casual way (UseCasualGetInGetOutAnims, which the game gives Wei in Bride to Be and a valet in
+	// his archetype). The thug AI's Follow behaviour stops within 20 m of the player, gets out and jogs off as soon as
+	// the get-out may be cut short (1.2 s, Vehicle\Queries\GetOutFast); the car's door controller
+	// (DoorControllers\Car\Driver\GetOut\Open\Regular) leaves the door swinging open when the driver is gone before
+	// 1.6 s, and the open door then stands in his way (2026-10-05: he ran on the spot behind it until the player
+	// walked over). The casual get-out can't be cut short before 2.25 s and its door controller always plays to the
+	// end, door shut. Cars only: vans and trucks have no casual get-out.
 	static constexpr char kCourier[] = R"sk(
 	!car !contact !met
 	car: c_world.spawn_object_at_xform(spawn_xform, '{VEHICLE}', "SDEncore_{KEY}_Car")<>Vehicle
@@ -102,12 +109,18 @@ if found.not() [
 		contact.force_enter_vehicle(car, true)
 		{FACTION}
 		contact.get_properties().append_property_boolean('CanEnterExitVehicle', true)
+		contact.get_properties().append_property_boolean('UseCasualGetInGetOutAnims', true)
 		contact.enable_script_control(false)
 		car.set_driving_role("Ally")
 		contact.set_objective_and_actor("{OBJECTIVE}", player)
 		Debug.println("[SDEncore] {TAG}: ", contact, " in ", car, " is on the way")
 		met: false
-		{SERVICE}
+		race [
+			[
+				{SERVICE}
+			]
+			{WATCH}
+		]
 		contact%minimap_remove_blip()
 		if contact.is_valid_simobject() [
 			if contact.is_knocked_out().not() [
@@ -148,6 +161,39 @@ if found.not() [
 				Debug.println("[SDEncore] {TAG}: the contact is down or gone")
 			]
 		]
+)sk";
+
+	// For the log, beside {SERVICE}: where he got out of the car, and whether he then stood still for 5 s on his way to
+	// the player (stuck behind something, the car door say). Never ends by itself: the race ends with {SERVICE}.
+	static constexpr char kWatch[] = R"sk(
+			[
+				!last !still
+				contact._wait_until_using_vehicle_any()
+				contact._wait_until_outside_vehicle()
+				Debug.println("[SDEncore] {TAG}: out of the car, ", player.distance_actor(contact), " m from the player")
+				last: contact.get_pos()
+				still: 0
+				loop [
+					_wait(1.0)
+					if contact.is_valid_simobject().not() [
+						exit
+					]
+					if player.distance_actor(contact) <= 4.0 [
+						exit
+					]
+					if contact.get_pos().distance(last) < 0.3 [
+						still := still + 1
+						if still = 5 [
+							Debug.println("[SDEncore] {TAG}: hasn't moved for 5 s, ", player.distance_actor(contact), " m from the player and ", contact.distance_actor(car), " m from his car")
+						]
+					]
+					else [
+						still := 0
+					]
+					last := contact.get_pos()
+				]
+				player._wait_infinite()
+			]
 )sk";
 
 	// Back to his car and away.
@@ -377,6 +423,7 @@ if found.not() [
 		if (kind != kBoatKind) {
 			const bool backup = kind == kGun || kind == kMelee;
 			text::Replace(script, "{SERVICE}", backup ? kBackupService : kind == kSwat ? kSwatService : kWeaponService);
+			text::Replace(script, "{WATCH}", kWatch);
 			text::Replace(script, "{MEET}", kMeet);
 			text::Replace(script, "{LEAVE}", kind == kSwat ? "if met.not() [\n" + std::string(kDriveOff) + "\n]" : backup ? "" : kDriveOff);
 			text::Replace(script, "{AFTER}", kind == kSwat ? kSwatAfter : "");

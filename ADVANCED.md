@@ -36,6 +36,8 @@
 | 快艇联络人 | 在马路刷车点刷快艇（脚本自己写着“等有了随机的刷船点就能用”） | 用游戏后来加的 `_find_boat_spawn_xform`，在最近的水边放一艘空艇并标在地图上 |
 | 特勤联络人 | 占位的混混开 SWAT 车来，交钥匙后还坐在驾驶座上 | SWAT 警员送车，交钥匙后下车走开，车解锁并标在地图上 |
 
+开车来的人下车时会把车门关上。原版里他一下车就往你这边跑，下车动作被打断，车门开着挡在他路上，他可能卡在车门后原地跑，要你自己走过去。现在他从容下车（`UseCasualGetInGetOutAnims`，游戏里沈威和代客泊车的人用的那种），这个动作在 2.25 秒内不会被打断，车门总会关好。只对轿车有效：面包车和卡车没有这种下车动作。
+
 台词换成正式文本（说话人用游戏自己的联系人名字）。原版的冷却时间（`repeatableinterval="5"`）只有 5 秒，所以没有冷却：联系人在服务进行中隐藏，结束后马上能再叫。
 
 枪贩：`SDEncore.ini` 的每个 `Spot` 是一个摊位。你走近 60 m 时，摊位上出现一个水街的人，像 F_PW 的枪贩那样用脚本发起购买对话；扣了钱就把枪发给你（`equip_firearm`，满弹药），你离开 90 m 后他离开。物品表里枪的价格、名字和描述在内存里改成 ini 的价格和对应语言的文本。
@@ -165,6 +167,12 @@ The contacts are ported from the original scripts, with their rough edges fixed:
 | Armed / hand to hand backup | a man follows you until he's down; set to FOLLOW_TARGET, which only follows | BE_ALLY (he fights); he leaves when you've been `Leash` m away for 30 s |
 | Boat contact | spawns a boat at a road spawn spot (its script says "Once I can get a random boat spawn position, this will work.") | uses `_find_boat_spawn_xform`, added to the game later: an empty boat at the nearest water, marked on the map |
 | SWAT contact | the placeholder thug drives a SWAT truck over and stays in the driver's seat after handing over the keys | a SWAT officer brings it, gets out and walks off; the truck is unlocked and marked on the map |
+
+The man sent shuts the car door when he gets out. In the originals he ran towards you as soon as he was out,
+which cut his get-out short and left the door open in his way: he could get stuck running on the spot behind it
+until you walked over. He now gets out casually (`UseCasualGetInGetOutAnims`, as Wei and a valet do in the
+game), which can't be cut short in the first 2.25 s and always shuts the door. Cars only: vans and trucks have no
+casual get-out.
 
 The lines are real ones (the contact speaks under the game's own name for him). The originals' cooldown
 (`repeatableinterval="5"`) is 5 seconds, so there is none: a contact is hidden while it's busy and back right after.
