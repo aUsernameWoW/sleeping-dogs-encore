@@ -77,9 +77,13 @@ Built from SDTaxi's core (`skookum.cc`, `phone.cc`, `console.cc`, `crash.cc`, `s
     logic (`Cop_behaviour.act` `PRIVATE_BANK\InfractionResponse`, `Objectives\Investigate`) replaces the
     objective with a pursuit or an investigation, after which a cop at the wheel patrols
     (`Actions\DrivingDummy\PatrolFallback`): on 2026-10-05 he joined police patrols he met and drove off; the cop
-    AI's Follow also kept him at the wheel, so the player had to stand at the driver's door. The player at the
-    stopped truck (3.5 m) also counts as meeting him; he gets out (truck stopped first) and walks off; the truck
-    unlocked and blipped until the player drives it. The archetype and the truck (`CopSUV`) still have
+    AI's Follow also kept him at the wheel, so the player had to stand at the driver's door. With the thug AI's
+    Follow (build-14) the SWAT archetype never drove: the truck stayed where it spawned (cause unknown). So the
+    officer has no objective, and the script drives the truck like SDTaxi's taxi (`_path_to_xform(player
+    xform, true)` re-aimed every 5 s until within 12 m, then `stop()` repeated while he gets out), and walks him
+    over (`_path_to_actor`); the speed is logged every 2 s on the way. The player at the stopped truck (3.5 m)
+    also counts as meeting him; he walks off afterwards; the truck unlocked and blipped until the player drives
+    it. The archetype and the truck (`CopSUV`) still have
     `default-component-CopUnit` (`UsableByCopSystem` true, read once in `CopUnitComponent::OnAttach`), so during a
     police chase `CopSystem::Reacquire` could still take them over (untested);
   - a courier who's done walks or drives off and is despawned out of sight only once 40 m from the player or after

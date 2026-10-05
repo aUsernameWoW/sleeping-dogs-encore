@@ -90,7 +90,9 @@ if found.not() [
 	// (Cop_behaviour.act PRIVATE_BANK\InfractionResponse, Objectives\Investigate) replaces the script's objective
 	// with a pursuit or an investigation, after which a cop at the wheel falls back to patrolling
 	// (Actions\DrivingDummy\PatrolFallback); 2026-10-05: meeting police patrols on the way, he joined them and drove
-	// off. The cop AI's Follow also kept him at the wheel, so the player had to stand at the driver's door.
+	// off. The cop AI's Follow also kept him at the wheel, so the player had to stand at the driver's door. With the
+	// thug AI's Follow (build-14) the SWAT archetype never drove off at all, so the officer gets no objective and the
+	// script drives, stops and gets him out ({OBJECTIVE}, kSwatService).
 	// He gets out the casual way (UseCasualGetInGetOutAnims, which the game gives Wei in Bride to Be and a valet in
 	// his archetype). The thug AI's Follow behaviour stops within 20 m of the player, gets out and jogs off as soon as
 	// the get-out may be cut short (1.2 s, Vehicle\Queries\GetOutFast); the car's door controller
@@ -164,6 +166,7 @@ if found.not() [
 )sk";
 
 	// Until the player is within 2 m of him (the original's _wait_near_actor), {MEETCAR}, 4 minutes, or he's down.
+	// Meanwhile he comes to the player: by his AI's objective, or {WALK}.
 	static constexpr char kMeet[] = R"sk(
 		race [
 			[
@@ -172,6 +175,7 @@ if found.not() [
 				Debug.println("[SDEncore] {TAG}: met the player at ", player.get_pos())
 			]
 			{MEETCAR}
+			{WALK}
 			[
 				_wait(240.0)
 				Debug.println("[SDEncore] {TAG}: not at the player after 4 minutes")
@@ -295,8 +299,18 @@ if found.not() [
 		]
 )sk";
 
+	// SWAT Contact, {WALK}: the officer, with no objective, walks to the player by script.
+	static constexpr char kWalk[] = R"sk(
+			[
+				loop [
+					contact._path_to_actor(player, 1.5, true)
+					_wait(0.5)
+				]
+			]
+)sk";
+
 	// SWAT Contact, {MEETCAR}: the player at the truck, stopped, counts as meeting him, for when he's still at the
-	// wheel (the player is in a car of his own: the thug AI's Follow then follows it and stays in).
+	// wheel (he didn't get out in time).
 	static constexpr char kMeetTruck[] = R"sk(
 			[
 				loop [
@@ -314,11 +328,75 @@ if found.not() [
 			]
 )sk";
 
-	// SWAT Contact: the truck at the meeting. The original's thug stayed in the driver's seat if he was still in it;
-	// he gets out (the truck stopped first) and walks off, and the truck is unlocked and marked until the player
-	// drives it.
+	// SWAT Contact: the script drives the truck to the player, as SDTaxi's taxi (tested): _path_to_xform to the road
+	// position nearest the player, re-aimed every 5 s, until the truck is within 12 m of them; then stop(), repeated
+	// since one only idles the AI driver until it takes up the old destination again. He gets out ({OBJECTIVE} is
+	// none, so nothing hurries him and the door shuts) and walks to the player ({WALK}); the truck at the meeting.
+	// The original's thug stayed in the driver's seat if he was still in it; he gets out and walks off, and the truck
+	// is unlocked and marked until the player drives it.
 	static constexpr char kSwatService[] = R"sk(
-		{MEET}
+		!arrived
+		arrived: false
+		race [
+			[
+				player._wait_near_actor(car, 12.0)
+				arrived := true
+				Debug.println("[SDEncore] {TAG}: the truck is within 12 m of the player")
+			]
+			[
+				loop [
+					race [
+						[
+							car._path_to_xform(player.get_xform(), true)
+							_wait(3.0)
+						]
+						_wait(5.0)
+					]
+				]
+			]
+			[
+				loop [
+					_wait(2.0)
+					Debug.println("[SDEncore] {TAG}: on the way, speed ", car.get_speed(), ", ", player.distance_actor(car), " m from the player")
+				]
+			]
+			[
+				_wait(240.0)
+				Debug.println("[SDEncore] {TAG}: not at the player after 4 minutes")
+			]
+			[
+				loop [
+					if contact.is_valid_simobject().not() [
+						exit
+					]
+					if contact.is_knocked_out() [
+						exit
+					]
+					if car.is_valid_simobject().not() [
+						exit
+					]
+					_wait(1.0)
+				]
+				Debug.println("[SDEncore] {TAG}: the contact or the truck is down or gone")
+			]
+		]
+		if arrived [
+			car.stop()
+			race [
+				[
+					contact._exit_vehicle()
+					_wait(1.0)
+				]
+				[
+					loop [
+						car.stop()
+						_wait(0.5)
+					]
+				]
+				_wait(10.0)
+			]
+			{MEET}
+		]
 		if met [
 			player.enable_player_script_control(true)
 			NIS.show_letterbox()
@@ -326,14 +404,15 @@ if found.not() [
 			NIS.hide_letterbox()
 			player.enable_player_script_control(false)
 			if contact.is_the_driver(car) [
-				contact.set_objective_and_actor("eAI_OBJECTIVE_NONE", player)
 				car.stop()
 				race [
-					car._wait_until_stop()
-					_wait(5.0)
-				]
-				race [
 					contact._exit_vehicle()
+					[
+						loop [
+							car.stop()
+							_wait(0.5)
+						]
+					]
 					_wait(10.0)
 				]
 			]
@@ -489,12 +568,13 @@ if found.not() [
 			text::Replace(script, "{WATCH}", kWatch);
 			text::Replace(script, "{MEET}", kMeet);
 			text::Replace(script, "{MEETCAR}", kind == kSwat ? kMeetTruck : "");
+			text::Replace(script, "{WALK}", kind == kSwat ? kWalk : "");
 			// The SWAT officer walks off while the truck waits for the player.
 			text::Replace(script, "{DEPART}", kind == kSwat ? "sync [\n[\n" + std::string(kLeave) + "\n]\n[\n" + kSwatAfter + "\n]\n]" : kLeave);
 			text::Replace(script, "{CARGOES}", kind == kSwat ? "if met.not() [\n" + std::string(kCarGoes) + "\n]" : kCarGoes);
 			text::Replace(script, "{LEAVE}", kind == kSwat ? "if met.not() [\n" + std::string(kDriveOff) + "\n]" : backup ? "" : kDriveOff);
 			text::Replace(script, "{ARM}", kind == kGun ? "contact.equip_firearm('{WEAPON}')" : kind == kMelee ? "contact.equip_melee('{WEAPON}')" : "");
-			text::Replace(script, "{OBJECTIVE}", backup ? "eAI_OBJECTIVE_BE_ALLY" : "eAI_OBJECTIVE_FOLLOW_TARGET");
+			text::Replace(script, "{OBJECTIVE}", backup ? "eAI_OBJECTIVE_BE_ALLY" : kind == kSwat ? "eAI_OBJECTIVE_NONE" : "eAI_OBJECTIVE_FOLLOW_TARGET");
 			text::Replace(script, "{LEASH}", Number(gConfig.mBackupLeash));
 			text::Replace(script, "{TIMELIMIT}", gConfig.mBackupMinutes > 0
 				? "[\n_wait(" + Number(gConfig.mBackupMinutes * 60.0f) + ")\nDebug.println(\"[SDEncore] {TAG}: time is up\")\n]" : "");
