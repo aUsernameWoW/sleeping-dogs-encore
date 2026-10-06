@@ -96,6 +96,8 @@
 [Releases](https://github.com/aUsernameWoW/sleeping-dogs-encore/releases) 里每个版本都有 `SDEncore.zip`（加载器 +
 mod）、`SDEncore.asi`（只有 mod）、`SDEncore.pdb`（调试符号）和 `THIRD-PARTY-NOTICES.md`。`main` 上每次提交都会自动编译、测试并发布为预发布版 `build-<N>`（没有在游戏里测过）；在游戏里验证过的构建会转为正式版，README 里的下载链接指向最新的正式版。
 
+2026 年 10 月以后的构建里，`SDEncore.zip`、`SDEncore.asi`、`SDEncore.pdb` 都附有 GitHub 签名的[构建来源证明](https://docs.github.com/zh/actions/how-tos/secure-your-work/use-artifact-attestations/use-artifact-attestations)（artifact attestation）。装了 [GitHub CLI](https://cli.github.com/) 的话，可以用 `gh attestation verify SDEncore.zip -R aUsernameWoW/sleeping-dogs-encore` 确认下载到的文件确实是这个仓库的 CI 编译的，以及来自哪个提交。
+
 ### 编译与测试
 
 Visual Studio 2022（v143），Windows SDK 10.0.26100。项目需要放在工作区的 `mods\SDEncore`，工作区里还要有
@@ -252,6 +254,11 @@ Each release in [Releases](https://github.com/aUsernameWoW/sleeping-dogs-encore/
 mod), `SDEncore.asi` (the mod alone), `SDEncore.pdb` (debug symbols) and `THIRD-PARTY-NOTICES.md`. Every commit on
 `main` is built, tested and published as a prerelease `build-<N>` (not tested in game); builds verified in game
 become full releases, which the README's download link points to.
+
+Builds since October 2026 carry a signed [build provenance attestation](https://docs.github.com/en/actions/how-tos/secure-your-work/use-artifact-attestations/use-artifact-attestations) for the
+`.zip`, `.asi` and `.pdb`: with the [GitHub CLI](https://cli.github.com/),
+`gh attestation verify SDEncore.zip -R aUsernameWoW/sleeping-dogs-encore` checks that a downloaded file was built by
+this repository's CI, and from which commit.
 
 ### Building and testing
 
